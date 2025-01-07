@@ -1,0 +1,45 @@
+<mvc:View
+    controllerName="myApp.controller.MasterFields"
+    xmlns="sap.m"
+    xmlns:mvc="sap.ui.core.mvc">
+    <Table id="idMasterFields" items="{camposModel>/fields}">
+        <headerToolbar>
+            <OverflowToolbar>
+                <Title text="Campos Maestros" />
+                <ToolbarSpacer />
+                <Button text="Crear" press="onOpenCreateDialog" />
+            </OverflowToolbar>
+        </headerToolbar>
+        <columns>
+            <Column>
+                <Text text="Nombre" />
+            </Column>
+            <Column>
+                <Text text="Estado" />
+            </Column>
+        </columns>
+        <items>
+            <ColumnListItem>
+                <cells>
+                    <Text text="{camposModel>name}" />
+                </cells>
+                <cells>
+                    <Switch state="{camposModel>active}" change="onChangeActiveState" />
+                </cells>
+            </ColumnListItem>
+        </items>
+    </Table>
+
+    <Dialog id="idCreateMasterFieldDialog" title="Crear Campo Maestro">
+        <content>
+            <VBox>
+                <Label text="Nombre" />
+                <Input id="idFieldNameInput" />
+            </VBox>
+        </content>
+        <buttons>
+            <Button text="Cancelar" press="onCloseCreateDialog" />
+            <Button text="Guardar" type="Emphasized" press="onSaveField" />
+        </buttons>
+    </Dialog>
+</mvc:View>

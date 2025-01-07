@@ -1,0 +1,17 @@
+{
+    "name": "ui5.quickstart",
+    "version": "1.0.0",
+    "description": "The UI5 quickstart tutorial",
+    "scripts": {
+        "start": "ui5 serve -o index.html --host 0.0.0.0 --port 8081"
+    },
+    "devDependencies": {
+        "@ui5/cli": "^4.0.12"
+    },
+    "dependencies": {
+        "axios": "^1.7.9",
+        "express": "^4.21.2",
+        "jspdf": "^2.5.2",
+        "xlsx": "^0.18.5"
+    }
+}

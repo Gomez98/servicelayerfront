@@ -1,0 +1,75 @@
+<mvc:View
+  controllerName="myApp.controller.ImportDialog"
+  xmlns="sap.m"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns:unified="sap.ui.unified">
+  <Dialog id="importDataDialog" title="Importar Data" resizable="true">
+    <content>
+      <VBox id="dynamicContent" justifyContent="Center" alignItems="Center">
+        <!-- FileUploader -->
+        <HBox justifyContent="Center" alignItems="Center">
+          <unified:FileUploader
+            id="fileUploader"
+            name="file"
+            fileType="xlsx,csv"
+            sendXHR="true"
+            change="onFileChange"
+            tooltip="Selecciona un archivo para cargar" />
+        </HBox>
+
+        <!-- ScrollContainer para la tabla -->
+        <ScrollContainer
+          id="scrollContainer"
+          width="100%"
+          horizontal="true"
+          vertical="true">
+          <Table id="contentTable" visible="false" fixedLayout="false" width="1200px">
+            <headerToolbar>
+              <OverflowToolbar>
+                <Title text="Contenido del Archivo" />
+              </OverflowToolbar>
+            </headerToolbar>
+          </Table>
+        </ScrollContainer>
+
+        <!-- Contenedor para los Selects dinámicos -->
+        <VBox id="headerMapping" visible="false">
+          <Title text="Enlace de Cabeceras con Campos Maestros" />
+        </VBox>
+
+        <!-- Input para ingresar descripción -->
+        <Input
+          id="descriptionInput"
+          visible="false"
+          placeholder="Ingrese una descripción" />
+      </VBox>
+    </content>
+    <buttons>
+      <Button
+        id="actionButton"
+        text="Procesar Archivo"
+        type="Emphasized"
+        press="onActionButtonPress"
+        visible="false" />
+      <Button text="Cerrar" press="onCloseImportDialog" />
+    </buttons>
+  </Dialog>
+
+  <!-- Modal para mostrar la barra de progreso -->
+  <Dialog id="loadingDialog" title="Procesando Archivo" draggable="false" resizable="false">
+    <content>
+      <VBox justifyContent="Center" alignItems="Center" class="sapUiSmallMargin" width='500px'>
+        <Text text="Cargando Archivo..." />
+        <ProgressIndicator
+          id="progressIndicator"
+          percentValue="0"
+          displayValue="0%"
+          width="100%"
+          height="2rem"
+        />
+
+      </VBox>
+    </content>
+
+  </Dialog>
+</mvc:View>

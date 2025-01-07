@@ -1,0 +1,62 @@
+<mvc:View
+  controllerName="myApp.controller.Main"
+  xmlns="sap.m"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns:tnt="sap.tnt">
+
+  <Page>
+    <content>
+        <tnt:ToolPage>
+          <!-- Encabezado principal -->
+          <tnt:header>
+            <tnt:ToolHeader>
+              <ToolbarSpacer />
+              <HBox alignItems="Center" class="userInfo">
+                <Text text="Nombre del Usuario" class="userName" />
+                <Avatar 
+                  displayShape="Circle"
+                  src="images/avatar.jpg" 
+                  initials="U" 
+                  displaySize="XS" 
+                />
+              </HBox>
+            </tnt:ToolHeader>
+          </tnt:header>
+
+           <tnt:sideContent>
+          <tnt:SideNavigation itemSelect="onSideNavItemSelect">
+            <tnt:NavigationList>
+              <!-- Sección Metas con subsecciones -->
+              <tnt:NavigationListItem
+                text="Metas"
+                icon="sap-icon://goal"
+                key="metas">
+                <tnt:NavigationListItem
+                  text="Ver Metas"
+                  key="verMetas" />
+                <tnt:NavigationListItem
+                  text="Campos Maestros"
+                  key="camposMaestros" />
+              </tnt:NavigationListItem>
+
+              <!-- Otras secciones -->
+              <tnt:NavigationListItem
+                text="Proveedores"
+                icon="sap-icon://company-view"
+                key="proveedores" />
+              <tnt:NavigationListItem
+                text="Servicios"
+                icon="sap-icon://crm-service-manager"
+                key="servicios" />
+            </tnt:NavigationList>
+          </tnt:SideNavigation>
+        </tnt:sideContent>
+
+          <!-- Contenido principal -->
+          <tnt:mainContents>
+            <VBox id="dynamicContent" />
+          </tnt:mainContents>
+        </tnt:ToolPage>
+    </content>
+  </Page>
+</mvc:View>

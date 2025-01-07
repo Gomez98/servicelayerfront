@@ -1,0 +1,16 @@
+specVersion: "2.3"
+metadata:
+  name: my-app
+
+type: application
+
+resources:
+  configuration:
+    paths:
+      webapp: webapp
+
+builder:
+  resources:
+    excludes:
+      - "test/"
+      - "**/Component-preload.js"

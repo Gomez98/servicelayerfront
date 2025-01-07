@@ -1,0 +1,8 @@
+<mvc:View
+    controllerName="myApp.controller.Suppliers"
+    xmlns="sap.m"
+    xmlns:mvc="sap.ui.core.mvc">
+  <VBox>
+    <Text text="Componentes para proveedores"/>
+  </VBox>
+</mvc:View>

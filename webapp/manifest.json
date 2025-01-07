@@ -1,0 +1,82 @@
+{
+  "sap.app": {
+    "id": "myApp",
+    "type": "application",
+    "title": "My Application",
+    "description": "A basic SAPUI5 application"
+  },
+  "sap.ui5": {
+    "resourceRoots": {
+        "myApp": "./"
+
+    },
+    "rootView": {
+      "viewName": "myApp.view.App",
+      "type": "XML",
+      "async": true,
+      "id": "app"
+    },
+    "resources": {
+      "css": [
+        {
+          "uri": "css/style.css"
+        }
+      ]
+    },
+    "dependencies": {
+      "libs": {
+        "sap.m": {},
+        "sap.tnt": {},
+        "sap.ui.layout": {}
+      }
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "viewType": "XML",
+        "viewPath": "myApp.view",
+        "controlId": "app",
+        "controlAggregation": "pages",
+        "async": true,
+        "clearControlAggregation": false
+      },
+      "routes": [
+        {
+          "pattern": "",
+          "name": "Login",
+          "target": [
+            "TargetLogin"
+          ]
+        },
+        {
+          "pattern": "main",
+          "name": "Main",
+          "target": [
+            "TargetMain"
+          ]
+        },
+        {
+          "pattern": "details",
+          "name": "Detail",
+          "target": [
+            "TargetDetails"
+          ]
+        }
+      ],
+      "targets": {
+        "TargetLogin": {
+          "viewName": "Login",
+          "viewType": "XML"
+        },
+        "TargetMain": {
+          "viewName": "Main",
+          "viewType": "XML"
+        },
+        "TargetDetails": {
+          "viewName": "Detail",
+          "viewType": "XML"
+        }
+      }
+    }
+  }
+}

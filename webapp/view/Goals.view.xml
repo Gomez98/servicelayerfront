@@ -1,0 +1,77 @@
+<mvc:View
+  controllerName="myApp.controller.Goals"
+  xmlns="sap.m"
+  xmlns:mvc="sap.ui.core.mvc">
+  <VBox>
+    <!-- Sección de la Tabla -->
+    <VBox visible="{viewModel>/isTableVisible}">
+      <HBox justifyContent="End" alignItems="Center">
+        <HBox class="button-container">
+          <Button text="Importar Data" press="onOpenImportDialog" />
+          <Button text="Exportar Data" press="onExportData" />
+        </HBox>
+      </HBox>
+      <ScrollContainer
+        id="scrollContainer"
+        width="100%"
+        height="400px" horizontal="true" vertical="true">
+        <Table id="idGoalsTable"
+          items="{goalModel>/goals}" growing="true" growingThreshold="10">
+          <headerToolbar>
+            <OverflowToolbar>
+              <Title text="Metas" />
+            </OverflowToolbar>
+          </headerToolbar>
+          <columns>
+            <Column>
+              <Text text="ID" />
+            </Column>
+            <Column>
+              <Text text="Descripción" />
+            </Column>
+            <Column>
+              <Text text="Creado por" />
+            </Column>
+            <Column>
+              <Text text="Modificado por" />
+            </Column>
+             <Column>
+              <Text text="Estado" />
+            </Column>
+            <Column>
+              <Text text="Ver Detalle" />
+            </Column>
+            <Column>
+              <Text text="Imprimir" />
+            </Column>
+          </columns>
+          <items>
+            <ColumnListItem>
+              <cells>
+                <Text text="{goalModel>id}" />
+                <Text text="{goalModel>description}" />
+                <Text text="{goalModel>createdBy}" />
+                <Text text="{goalModel>modifiedBy}" />
+                <Text text="{goalModel>status}" />
+                <Button icon="sap-icon://display" press="onViewDetails" tooltip="Ver detalle" />
+                <Button icon="sap-icon://print" press="onPrintDetails" tooltip="Imprimir en PDF" />
+              </cells>
+            </ColumnListItem>
+          </items>
+        </Table>
+      </ScrollContainer>
+    </VBox>
+
+    <!-- Sección de Detalles -->
+    <VBox visible="{viewModel>/isDetailVisible}">
+      <Button icon="sap-icon://nav-back" press="onNavBack" tooltip="Volver" />
+      <Table id="contentTable">
+        <headerToolbar>
+          <OverflowToolbar>
+            <Title text="Detalles del Content" />
+          </OverflowToolbar>
+        </headerToolbar>
+      </Table>
+    </VBox>
+  </VBox>
+</mvc:View>
