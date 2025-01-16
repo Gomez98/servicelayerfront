@@ -40,6 +40,8 @@ sap.ui.define([], function () {
         saveMasterFields: (masterField) => apiClient.post("/api/master-fields/", masterField),
         updateMasterField: (masterField) => apiClient.put(`/api/master-fields/${masterField.id}`, masterField),
         saveHeader: (header) => apiClient.post("/api/goals/header/", header),
-        saveDetails: (details) => apiClient.post("/api/goals/detail/", details)
+        saveDetails: (details) => apiClient.post("/api/goals/detail/", details),
+        viewReport: (report) => apiClient.post("/api/goals/report/general", report)
+
     };
 });

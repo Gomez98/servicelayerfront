@@ -41,9 +41,9 @@
 
               <!-- Otras secciones -->
               <tnt:NavigationListItem
-                text="Proveedores"
+                text="Reportes"
                 icon="sap-icon://company-view"
-                key="proveedores" />
+                key="reports" />
               <tnt:NavigationListItem
                 text="Servicios"
                 icon="sap-icon://crm-service-manager"

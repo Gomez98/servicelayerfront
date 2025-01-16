@@ -1,0 +1,98 @@
+<mvc:View
+    controllerName="myApp.controller.Reports"
+    xmlns="sap.m"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:core="sap.ui.core">
+  <VBox>
+    <!-- Título -->
+    <Text text="Reporte de Metas" design="Bold" class="sapUiSmallMargin"/>
+
+    <!-- Contenedor de filtros -->
+    <HBox class="sapUiSmallMargin" justifyContent="SpaceBetween">
+      <!-- Campo para Usuario -->
+      <VBox>
+        <Label text="Usuario"/>
+        <Input id="filterUsername" placeholder="Ingrese el nombre de usuario"/>
+      </VBox>
+
+      <!-- Campo para Estado -->
+      <VBox>
+        <Label text="Estado"/>
+        <Select id="filterStatus">
+          <items>
+            <core:Item key="" text="Todos"/>
+            <core:Item key="Active" text="Activo"/>
+            <core:Item key="Inactive" text="Inactivo"/>
+            <core:Item key="PREPARADO" text="PREPARADO"/>
+          </items>
+        </Select>
+      </VBox>
+
+      <!-- Botón para aplicar filtros -->
+      <VBox alignItems="End">
+        <Button text="Filtrar" press="onFilter" type="Emphasized"/>
+      </VBox>
+    </HBox>
+
+    <!-- Tabla para mostrar el reporte -->
+
+    <ScrollContainer
+        id="scrollContainer"
+        width="100%"
+        height="400px" horizontal="true" vertical="true">
+    <Table
+      id="reportTable"
+      visibleRowCount="5" 
+      alternateRowColors="true"
+      items="{reportModel>/data}">
+      <headerToolbar>
+        <Toolbar>
+          <Title text="Resultados del Reporte"/>
+        </Toolbar>
+      </headerToolbar>
+      <columns>
+        <Column>
+          <Text text="ID Cabecera"/>
+        </Column>
+        <Column>
+          <Text text="Descripción"/>
+        </Column>
+        <Column>
+          <Text text="Creado por"/>
+        </Column>
+        <Column>
+          <Text text="Modificado por"/>
+        </Column>
+        <Column>
+          <Text text="Estado"/>
+        </Column>
+        <Column>
+          <Text text="ID Detalle"/>
+        </Column>
+        <Column>
+          <Text text="Contenido Detalle"/>
+        </Column>
+      </columns>
+      <items>
+        <ColumnListItem>
+          <cells>
+            <Text text="{reportModel>headerId}"/>
+            <Text text="{reportModel>headerDescription}"/>
+            <Text text="{reportModel>createdBy}"/>
+            <Text text="{reportModel>modifiedBy}"/>
+            <Text text="{reportModel>status}"/>
+            <Text text="{reportModel>detailId}"/>
+            <Text text="{reportModel>detailContent}"/>
+          </cells>
+        </ColumnListItem>
+      </items>
+    </Table>
+  </ScrollContainer>
+    <!-- Paginación -->
+    <Toolbar class="sapUiTinyMargin">
+      <Button text="Anterior" press="onPreviousPage" enabled="{reportModel>/hasPreviousPage}" />
+      <Text text="{reportModel>/currentPage}" />
+      <Button text="Siguiente" press="onNextPage" enabled="{reportModel>/hasNextPage}" />
+    </Toolbar>
+  </VBox>
+</mvc:View>

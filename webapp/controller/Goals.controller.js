@@ -107,7 +107,6 @@ sap.ui.define([
         onNavBack: function () {
             var oViewModel = this.getView().getModel("viewModel");
 
-            // Cambiar visibilidad
             oViewModel.setProperty("/isTableVisible", true);
             oViewModel.setProperty("/isDetailVisible", false);
         },
@@ -151,13 +150,16 @@ sap.ui.define([
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
         
-            // Datos de la cabecera
+            doc.setFontSize(12);
             doc.text("Detalles de la Cabecera", 10, 10);
+        
+            // Cambiar tamaño de letra para los datos de la cabecera
+            doc.setFontSize(10);
             doc.text(`ID: ${oData.id}`, 10, 20);
             doc.text(`Descripción: ${oData.description}`, 10, 30);
-            doc.text(`Creado por: ${oData.createdBy}`, 10, 40);
-            doc.text(`Modificado por: ${oData.modifiedBy}`, 10, 50);
-            doc.text(`Estado: ${oData.status}`, 10, 60);
+            doc.text(`Creado por: ${oData.createdBy}`, 150, 20);
+            doc.text(`Modificado por: ${oData.modifiedBy}`, 150, 30);
+            doc.text(`Estado: ${oData.status}`, 10, 40);
         
             // Obtener detalles asociados a la cabecera
             apiService
@@ -165,27 +167,24 @@ sap.ui.define([
                 .then(response => {
                     if (response.data.content) {
                         const aDetails = JSON.parse(response.data.content);
-        
-                        // Agregar título para la tabla
-                        doc.text("Detalles Asociados:", 10, 80);
-        
+                        doc.setFontSize(10);
                         // Preparar datos para la tabla
                         const columns = Object.keys(aDetails[0]).map(key => ({ header: key, dataKey: key }));
                         const rows = aDetails;
         
                         // Configurar opciones de la tabla
                         doc.autoTable({
-                            startY: 90, // Comienza debajo del texto
+                            startY: 50, // Comienza debajo del texto
                             head: [columns.map(col => col.header)], // Nombres de las columnas
                             body: rows.map(row => columns.map(col => row[col.dataKey])), // Datos de las filas
                             theme: 'grid', // Estilo de la tabla
-                            headStyles: { fillColor: [22, 160, 133] }, // Color del encabezado
+                            headStyles: { fillColor: [148, 99, 174] }, // Color del encabezado
                             bodyStyles: { textColor: [0, 0, 0] }, // Color del texto
                             margin: { top: 10, bottom: 10 }, // Márgenes de la tabla
                             didDrawPage: function (data) {
                                 // Agregar un pie de página
                                 const pageHeight = doc.internal.pageSize.height;
-                                doc.setFontSize(10);
+                                doc.setFontSize(8);
                                 doc.text(`Página ${doc.internal.getNumberOfPages()}`, 10, pageHeight - 10);
                             },
                         });

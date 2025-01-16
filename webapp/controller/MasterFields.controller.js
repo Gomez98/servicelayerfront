@@ -12,6 +12,8 @@ sap.ui.define([
             apiService.getMasterFields()
                 .then(response => {
                     oModel.setData({ fields: response.data });
+                    console.log("MATERDATA",oModel)
+
                 })
                 .catch(error => {
                     sap.m.MessageToast.show("Error al cargar los datos del backend: " + error.message);
@@ -35,6 +37,7 @@ sap.ui.define([
                         const fields = oModel.getData().fields || [];
                         fields.push(response.data);
                         oModel.setData({ fields });
+                        console.log("MATERDATA",oModel)
                         sap.m.MessageToast.show("Campo maestro creado correctamente.");
                         this.onCloseCreateDialog();
                     })

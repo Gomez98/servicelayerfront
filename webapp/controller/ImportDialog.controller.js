@@ -124,7 +124,6 @@ sap.ui.define([
                 return;
             }
 
-            // Crear columnas dinámicamente
             const aHeaders = aData[0];
             aHeaders.forEach(header => {
                 oTable.addColumn(new Column({
@@ -132,7 +131,6 @@ sap.ui.define([
                 }));
             });
 
-            // Crear filas dinámicamente
             aData.slice(1, 10).forEach(row => {
                 const aCells = row.map(cell => new Text({ text: cell }));
                 oTable.addItem(new ColumnListItem({ cells: aCells }));
@@ -145,7 +143,6 @@ sap.ui.define([
         },
 
         onActionButtonPress: function () {
-            console.log("TIMES",this._currentStep)
             if (this._currentStep === 1) {
                 this._showHeaderMapping();
                 this._currentStep = 2;
@@ -157,7 +154,6 @@ sap.ui.define([
             }
         },
 
-        // Paso 2: Mapear cabeceras con campos maestros
         _showHeaderMapping: function () {
             const oMappingContainer = this.byId("headerMapping");
             oMappingContainer.removeAllItems();
@@ -182,7 +178,6 @@ sap.ui.define([
                 });
         },
 
-        // Paso 3: Mostrar el input para ingresar descripción
         _showDescriptionInput: function () {
             this.byId("descriptionInput").setVisible(true);
         },
@@ -192,10 +187,18 @@ sap.ui.define([
             const oDescriptionInput = this.byId("descriptionInput");
             const mappings = [];
             oMappingContainer.getItems().forEach((item, index) => {
-                if (item.isA("sap.m.Select")) {
-                    const field = item.getSelectedKey();
-                    if (field) {
-                        mappings.push(field);
+                if (item.isA("sap.m.Label")) {
+                    const labelText = item.getText();
+            
+                    const nextItem = oMappingContainer.getItems()[index + 1];
+                    if (nextItem && nextItem.isA("sap.m.Select")) {
+                        const selectedKey = nextItem.getSelectedKey();
+                        if (selectedKey) {
+                            mappings.push({
+                                label: labelText,
+                                selected: selectedKey
+                            });
+                        }
                     }
                 }
             });
@@ -205,13 +208,12 @@ sap.ui.define([
                 const obj = {};
                 row.forEach((cell, index) => {
                     const header = this._headers[index];
-                    if (mappings.includes(header)) {
+                    if (mappings.some(mapping => mapping.label === header)) {
                         obj[header] = cell;
                     }
                 });
                 return obj;
             });
-
             apiService.saveHeader({ id: Date.now(), description })
                 .then(header => {
                     return apiService.saveDetails({

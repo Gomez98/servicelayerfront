@@ -37,8 +37,8 @@ sap.ui.define([
           case "camposMaestros":
             sViewName = "myApp.view.MasterFields";
             break;
-          case "proveedores":
-            sViewName = "myApp.view.Suppliers";
+          case "reports":
+            sViewName = "myApp.view.Reports";
             break;
           case "servicios":
             sViewName = "myApp.view.Services";
