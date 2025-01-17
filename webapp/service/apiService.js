@@ -2,7 +2,7 @@ sap.ui.define([], function () {
     "use strict";
 
     const apiClient = axios.create({
-        baseURL: "http://sv-hol0uzz7c3.cloud.elastika.pe:8081",
+        baseURL: "https://sv-hol0uzz7c3.cloud.elastika.pe:8081",
         headers: {
             "Content-Type": "application/json"
         }
