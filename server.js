@@ -4,7 +4,7 @@ const path = require("path");
 const app = express();
 
 // Puerto donde se ejecutará el servidor
-const PORT = 80;
+const PORT = 8080;
 
 // Ruta para servir los archivos estáticos
 const staticPath = path.join(__dirname, "webapp");
