@@ -2,7 +2,7 @@ sap.ui.define([], function () {
     "use strict";
 
     const apiClient = axios.create({
-        baseURL: "http://192.168.221.80:8081",
+        baseURL: "http://localhost:8081",
         headers: {
             "Content-Type": "application/json"
         }

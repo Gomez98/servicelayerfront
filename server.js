@@ -4,7 +4,7 @@ const path = require("path");
 const app = express();
 
 // Puerto donde se ejecutará el servidor
-const PORT = 8080;
+const PORT = 80;
 
 // Ruta para servir los archivos estáticos
 const staticPath = path.join(__dirname, "webapp");
@@ -19,6 +19,5 @@ app.get("*", (req, res) => {
 
 // Iniciar el servidor
 app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Servidor corriendo en: http://localhost:${PORT}`);
-    console.log(`Acceso desde otra PC: http://<TU_IP_LOCAL>:${PORT}`);
+
 });
