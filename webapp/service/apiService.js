@@ -34,14 +34,15 @@ sap.ui.define([], function () {
 
     return {
         login: (credentials) => apiClient.post("/auth/login", credentials),
-        getGoals: () => apiClient.get("/api/goals/header/"),
-        getGoalDetails: (id) => apiClient.get(`/api/goals/detail/${id}`),
-        getMasterFields: () => apiClient.get("/api/master-fields/"),
-        saveMasterFields: (masterField) => apiClient.post("/api/master-fields/", masterField),
-        updateMasterField: (masterField) => apiClient.put(`/api/master-fields/${masterField.id}`, masterField),
-        saveHeader: (header) => apiClient.post("/api/goals/header/", header),
-        saveDetails: (details) => apiClient.post("/api/goals/detail/", details),
-        viewReport: (report) => apiClient.post("/api/goals/report/general", report)
-
+        getGoals: () => apiClient.get("/goals/header/all"),
+        getGoalDetails: (id) => apiClient.get(`/goals/detail/${id}`),
+        getMasterFields: () => apiClient.get("/master-fields/all"),
+        saveMasterFields: (masterField) => apiClient.post("/master-fields/create", masterField),
+        updateMasterField: (masterField) => apiClient.patch("/master-fields/update", masterField),
+        saveHeader: (header) => apiClient.post("/goals/header/create", header),
+        saveDetails: (details) => apiClient.post("/goals/detail/create", details),
+        updateDetails: (details) => apiClient.patch("/goals/detail/update", details),
+        viewReport: (report) => apiClient.post("/goals/report/general", report),
+        getUser: () => apiClient.get("/user/")
     };
 });

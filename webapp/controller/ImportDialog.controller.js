@@ -214,11 +214,11 @@ sap.ui.define([
                 });
                 return obj;
             });
-            apiService.saveHeader({ id: Date.now(), description })
+
+            apiService.saveHeader({ description })
                 .then(header => {
                     return apiService.saveDetails({
-                        id: Date.now(),
-                        goalHeader: {id : header.data.id},
+                        goalHeader: {id : header.data.data.id},
                         content: JSON.stringify(content)
                     });
                 })

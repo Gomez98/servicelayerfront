@@ -7,21 +7,21 @@ sap.ui.define([
   
     return Controller.extend("myApp.controller.Main", {
       onInit: function () {
-        const token = sessionStorage.getItem("jwt");
-        if (!token) {
-          const oRouter = sap.ui.core.UIComponent.getRouterFor(this);
-          oRouter.navTo("Login"); // Redirige al login si no hay token
-          MessageToast.show("Por favor, inicie sesión.");
-        }
+        var userModel = new JSONModel();
+        this.getView().setModel(userModel, "userModel");
+        apiService.getUSer()
+          .then(response => {
+            userModel.setData({ user: response.data.data });
+            console.log("response",response)
+          })
+          .catch(error => {
+              sap.m.MessageToast.show("Error al cargar datos de usuario");
+          });
+
         this._views = {};
       },
   
       onSideNavItemSelect: function (oEvent) {
-        const token = sessionStorage.getItem("jwt");
-        if (!token) {
-          sap.m.MessageToast.show("Acceso denegado. Por favor, inicie sesión.");
-          return;
-        }
   
         var sKey = oEvent.getParameter("item").getKey();
         var oDynamicContent = this.byId("dynamicContent");

@@ -7,12 +7,11 @@
   <Page>
     <content>
         <tnt:ToolPage>
-          <!-- Encabezado principal -->
           <tnt:header>
             <tnt:ToolHeader>
               <ToolbarSpacer />
               <HBox alignItems="Center" class="userInfo">
-                <Text text="Nombre del Usuario" class="userName" />
+                <Text text="{userModel/user/username}" class="userName"/>
                 <Avatar 
                   displayShape="Circle"
                   src="images/avatar.jpg" 
@@ -26,7 +25,6 @@
            <tnt:sideContent>
           <tnt:SideNavigation itemSelect="onSideNavItemSelect">
             <tnt:NavigationList>
-              <!-- Sección Metas con subsecciones -->
               <tnt:NavigationListItem
                 text="Metas"
                 icon="sap-icon://goal"
@@ -39,7 +37,6 @@
                   key="camposMaestros" />
               </tnt:NavigationListItem>
 
-              <!-- Otras secciones -->
               <tnt:NavigationListItem
                 text="Reportes"
                 icon="sap-icon://company-view"
@@ -52,7 +49,6 @@
           </tnt:SideNavigation>
         </tnt:sideContent>
 
-          <!-- Contenido principal -->
           <tnt:mainContents>
             <VBox id="dynamicContent" />
           </tnt:mainContents>
