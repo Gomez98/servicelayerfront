@@ -1,8 +1,9 @@
 sap.ui.define([
+    "sap/ui/model/json/JSONModel",
     "sap/ui/core/mvc/Controller",
     "sap/ui/core/mvc/XMLView",
     "sap/m/MessageToast"
-  ], function (Controller, XMLView, MessageToast) {
+  ], function (Controller, XMLView, JSONModel) {
     "use strict";
   
     return Controller.extend("myApp.controller.Main", {
