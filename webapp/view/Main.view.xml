@@ -2,33 +2,47 @@
   controllerName="myApp.controller.Main"
   xmlns="sap.m"
   xmlns:mvc="sap.ui.core.mvc"
+  xmlns:core="sap.ui.core"
   xmlns:tnt="sap.tnt">
 
   <Page>
+    <headerContent>
+      <HBox
+        id="homeContainer"
+        alignItems="Center"
+        class="sapUiTinyMargin myCustomHome">
+        <core:Icon
+          src="sap-icon://home" 
+          class="myCustomHome"/>
+        <Text
+          text="Inicio"
+          class="sapUiTinyMargin myCustomHome"
+        />
+      </HBox>
+      <ToolbarSpacer />
+      <HBox
+        class="sapUiTinyMargin"
+      >
+        <Text
+          text="{userModel>/user/name}"
+          class="sapUiTinyMargin" />
+        <core:Icon
+          src="sap-icon://person-placeholder" />
+      </HBox>
+    </headerContent>
     <content>
-        <tnt:ToolPage>
-          <tnt:header>
-            <tnt:ToolHeader>
-              <ToolbarSpacer />
-              <HBox alignItems="Center" class="userInfo">
-                <Text text="{userModel/user/username}" class="userName"/>
-                <Avatar 
-                  displayShape="Circle"
-                  src="images/avatar.jpg" 
-                  initials="U" 
-                  displaySize="XS" 
-                />
-              </HBox>
-            </tnt:ToolHeader>
-          </tnt:header>
-
-           <tnt:sideContent>
-          <tnt:SideNavigation itemSelect="onSideNavItemSelect">
+      <tnt:ToolPage>
+        <tnt:sideContent>
+          <!-- Menú Lateral (SideNavigation) -->
+          <tnt:SideNavigation
+            itemSelect="onSideNavItemSelect"
+            visible="{viewModel>/isSideNavVisible}">
             <tnt:NavigationList>
               <tnt:NavigationListItem
                 text="Metas"
                 icon="sap-icon://goal"
-                key="metas">
+                key="metas"
+                visible="{viewModel>/metasVisible}">
                 <tnt:NavigationListItem
                   text="Ver Metas"
                   key="verMetas" />
@@ -40,19 +54,102 @@
               <tnt:NavigationListItem
                 text="Reportes"
                 icon="sap-icon://company-view"
-                key="reports" />
+                key="reports"
+                visible="{viewModel>/reportsVisible}" />
+
               <tnt:NavigationListItem
                 text="Servicios"
                 icon="sap-icon://crm-service-manager"
-                key="servicios" />
+                key="servicios"
+                visible="{viewModel>/servicesVisible}" />
             </tnt:NavigationList>
+            <tnt:footer>
+              <tnt:NavigationList>
+                <tnt:NavigationListItem
+                  text="Cerrar Sesión"
+                  icon="sap-icon://log"
+                  key="logout"
+                  visible="{viewModel>/logoutVisible}" />
+              </tnt:NavigationList>
+            </tnt:footer>
           </tnt:SideNavigation>
         </tnt:sideContent>
 
-          <tnt:mainContents>
-            <VBox id="dynamicContent" />
-          </tnt:mainContents>
-        </tnt:ToolPage>
+        <tnt:mainContents>
+          <!-- Menú Inicial con Cards -->
+          <FlexBox
+            id="menuContainer"
+            alignItems="Center"
+            justifyContent="Center"
+            height="inherit"
+            visible="{viewModel>/isCardMenuVisible}">
+
+            <!-- Card Metas -->
+            <GenericTile
+              header="Metas"
+              subheader="Gestión de metas"
+              class="sapUiTinyMargin"
+              press="onCardSelect">
+              <customData>
+                <core:CustomData key="action" value="metas" />
+              </customData>
+              <TileContent>
+                <ImageContent src="sap-icon://goal" />
+              </TileContent>
+            </GenericTile>
+
+            <!-- Card Reportes -->
+            <GenericTile
+              class="sapUiTinyMargin"
+              header="Reportes"
+              subheader="Gestión de reportes"
+              press="onCardSelect">
+              <customData>
+                <core:CustomData key="action" value="reports" />
+              </customData>
+              <TileContent>
+                <ImageContent src="sap-icon://company-view" />
+              </TileContent>
+            </GenericTile>
+
+            <!-- Card Servicios -->
+            <GenericTile
+              class="sapUiTinyMargin"
+              header="Servicios"
+              subheader="Gestión de servicios"
+              press="onCardSelect">
+              <customData>
+                <core:CustomData key="action" value="servicios" />
+              </customData>
+              <TileContent>
+                <ImageContent src="sap-icon://crm-service-manager" />
+              </TileContent>
+            </GenericTile>
+
+            <!-- Card Cerrar Sesión -->
+            <GenericTile
+              class="sapUiTinyMargin"
+              header="Cerrar Sesión"
+              subheader="Salir de la aplicación"
+              press="onCardSelect">
+              <customData>
+                <core:CustomData key="action" value="logout" />
+              </customData>
+              <TileContent>
+                <ImageContent src="sap-icon://log" />
+              </TileContent>
+            </GenericTile>
+
+          </FlexBox>
+
+          <!-- Contenedor Dinámico -->
+          <VBox
+            id="dynamicContent"
+            visible="{viewModel>/isDynamicContentVisible}"
+            fitContainer="true">
+          </VBox>
+        </tnt:mainContents>
+      </tnt:ToolPage>
     </content>
   </Page>
 </mvc:View>

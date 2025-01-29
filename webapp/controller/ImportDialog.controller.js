@@ -14,74 +14,36 @@ sap.ui.define([
 
     return Controller.extend("myApp.controller.ImportDialog", {
         onInit: function () {
-            this._currentStep = 1; // Paso inicial
-            this._fileContent = null; // Contenido del archivo
-            this._description = null; // Descripción ingresada
-            this._headers = []; // Cabeceras del archivo
+            this._fileContent = null;
+            this._headers = [];
+            this._fileUploaded = false;
+
+            const oNavContainer = this.byId("navContainer");
+            oNavContainer.to(this.byId("fileUploaderPage"));
         },
 
         onFileChange: function (oEvent) {
-            const oFileUploader = this.byId("fileUploader");
             const oFile = oEvent.getParameter("files") && oEvent.getParameter("files")[0];
-            const oLoadingDialog = this.byId("loadingDialog");
-            const oProgressIndicator = this.byId("progressIndicator");
 
             if (!oFile) {
                 MessageToast.show("Seleccione un archivo.");
                 return;
             }
-
-            oProgressIndicator.setPercentValue(0); // Reinicia el progreso
-            oProgressIndicator.setDisplayValue("0%");
-            oLoadingDialog.open();
-
             const sFileType = oFile.name.split(".").pop().toLowerCase();
-            if (sFileType !== "csv" && sFileType !== "xlsx") {
-                MessageToast.show("Solo se permiten archivos .xlsx o .csv.");
-                oFileUploader.setValue("");
-                oLoadingDialog.close();
-                return;
-            }
-
             const reader = new FileReader();
-            let simulatedProgress = 0;
-            const simulateProgressInterval = setInterval(() => {
-                if (simulatedProgress < 90) {
-                    simulatedProgress += 2; // Incrementa lentamente para hacer la simulación más larga
-                    oProgressIndicator.setPercentValue(simulatedProgress);
-                    oProgressIndicator.setDisplayValue(simulatedProgress + "%");
 
-                }
-            }, 900); // Intervalo más largo para simular progreso lento
-
-            reader.onloadstart = () => {
-                oProgressIndicator.setPercentValue(0);
-                oProgressIndicator.setDisplayValue("0%");
-            };
-
-            reader.onprogress = e => {
-                clearInterval(simulateProgressInterval); // Detenemos la simulación si hay progreso real
-                const progress = Math.round((e.loaded / e.total) * 100);
-                oProgressIndicator.setPercentValue(progress);
-                oProgressIndicator.setDisplayValue(progress + "%");
-            };
 
             reader.onload = e => {
-                clearInterval(simulateProgressInterval); // Detenemos la simulación al finalizar
-                oProgressIndicator.setPercentValue(100);
-                oProgressIndicator.setDisplayValue("100%");
-
                 const arrayBuffer = e.target.result;
                 if (sFileType === "csv") {
-                    this._processCSV(e.target.result);
+                    this._processCSV(arrayBuffer);
                 } else if (sFileType === "xlsx") {
                     this._processExcel(arrayBuffer);
                 }
-
-                setTimeout(() => {
-                    oLoadingDialog.close(); // Retrasa el cierre para que el usuario vea el 100%
-                }, 1500); // Tiempo adicional para que el progreso final sea visible
+                this._fileUploaded = true;
+                MessageToast.show("Archivo cargado exitosamente.");
             };
+
 
             if (sFileType === "xlsx") {
                 reader.readAsArrayBuffer(oFile);
@@ -92,7 +54,7 @@ sap.ui.define([
 
         _processCSV: function (sContent) {
             const aRows = sContent.split("\n").map(row => row.split(","));
-            this._headers = aRows[0]; // Almacenar cabeceras
+            this._headers = aRows[0];
             this._createTableContent(aRows);
         },
 
@@ -101,31 +63,18 @@ sap.ui.define([
             const firstSheetName = workbook.SheetNames[0];
             const worksheet = workbook.Sheets[firstSheetName];
             const aJsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-
-            if (!aJsonData || aJsonData.length === 0) {
-                MessageToast.show("El archivo no contiene datos válidos.");
-                return;
-            }
-
-            this._headers = aJsonData[0]; // Almacenar cabeceras
+            this._headers = aJsonData[0];
             this._fileContent = aJsonData;
             this._createTableContent(aJsonData);
         },
 
         _createTableContent: function (aData) {
-            const oScrollContainer = this.byId("scrollContainer");
-            oScrollContainer.setHeight("400px")
             const oTable = this.byId("contentTable");
+
             oTable.removeAllColumns();
             oTable.removeAllItems();
 
-            if (aData.length === 0) {
-                oTable.setVisible(false);
-                return;
-            }
-
-            const aHeaders = aData[0];
-            aHeaders.forEach(header => {
+            this._headers.forEach(header => {
                 oTable.addColumn(new Column({
                     header: new Text({ text: header.trim() })
                 }));
@@ -137,38 +86,71 @@ sap.ui.define([
             });
 
             oTable.setVisible(true);
-            const actionButton = this.byId("actionButton");
-            actionButton.setVisible(true);
-            actionButton.setText("Siguiente");
+            const oDialog = this.byId("importDataDialog");
+            oDialog.setContentHeight("600px");
+            oDialog.setContentWidth("800px");
+
+            this._navigateTo("tablePage");
         },
 
-        onActionButtonPress: function () {
-            if (this._currentStep === 1) {
-                this._showHeaderMapping();
-                this._currentStep = 2;
-            } else if (this._currentStep === 2) {
-                this._showDescriptionInput();
-                this._currentStep = 3;
-            } else if (this._currentStep === 3) {
-                this._saveData();
+        onNavBack: function () {
+            const oNavContainer = this.byId("navContainer");
+            if (oNavContainer.getPreviousPage()) {
+                oNavContainer.back();
+            } else {
+                MessageToast.show("Ya estás en la primera página.");
             }
         },
 
-        _showHeaderMapping: function () {
+        onAccept: function () {
+            const oNavContainer = this.byId("navContainer");
+            const oCurrentPage = oNavContainer.getCurrentPage();
+            const sCurrentPageId = oCurrentPage.getId().split("--").pop();
+            console.log("sCurrentPageId", sCurrentPageId)
+            if (sCurrentPageId === "fileUploaderPage") {
+                // Validar que se haya subido un archivo antes de avanzar
+                if (!this._fileUploaded) {
+                    MessageToast.show("Por favor, cargue un archivo antes de continuar.");
+                    return;
+                }
+                this._navigateTo("tablePage");
+            } else if (sCurrentPageId === "tablePage") {
+                // Si estamos en tablePage, ejecutar _populateHeaderMapping antes de avanzar
+                this._populateHeaderMapping();
+                this._navigateTo("headerMappingPage");
+            } else if (sCurrentPageId === "headerMappingPage") {
+                // Si estamos en headerMappingPage, ejecutar descriptionPage antes de avanzar
+
+                this._navigateTo("descriptionPage");
+            }
+        },
+
+        _populateHeaderMapping: function () {
             const oMappingContainer = this.byId("headerMapping");
             oMappingContainer.removeAllItems();
+
             apiService.getMasterFields()
                 .then(fields => {
                     this._headers.forEach(header => {
                         const oLabel = new Label({ text: header });
                         const oSelect = new Select();
                         oSelect.addItem(new Item({ key: "", text: "---Seleccione Campo---" }));
-                        fields.data.forEach(field => {
-                            oSelect.addItem(new Item({ key: field.name, text: field.name }));
+                        fields.data.data.forEach(field => {
+                            if (field.active) {
+                                oSelect.addItem(new Item({ key: field.name, text: field.name }));
+                            }
                         });
 
-                        oMappingContainer.addItem(oLabel);
-                        oMappingContainer.addItem(oSelect);
+                        const oHBox = new sap.m.HBox({
+                            width: "100%",
+                            items: [oLabel, oSelect], // Coloca el Label y el Select en el HBox
+                            justifyContent: "Start", // Espacio entre elementos
+                            alignItems: "Center" // Centrado verticalmente
+                        });
+                        oLabel.setWidth("150px"); // Fijar un ancho consistente para los Labels
+                        oLabel.addStyleClass("sapUiTinyMarginEnd"); // Añadir un pequeño margen al final del Label
+                        oSelect.setWidth("auto");
+                        oMappingContainer.addItem(oHBox);
                     });
 
                     oMappingContainer.setVisible(true);
@@ -178,21 +160,22 @@ sap.ui.define([
                 });
         },
 
-        _showDescriptionInput: function () {
-            this.byId("descriptionInput").setVisible(true);
-        },
 
-        _saveData: function () {
+        onFinish: function () {
             const oMappingContainer = this.byId("headerMapping");
             const oDescriptionInput = this.byId("descriptionInput");
             const mappings = [];
-            oMappingContainer.getItems().forEach((item, index) => {
-                if (item.isA("sap.m.Label")) {
-                    const labelText = item.getText();
-            
-                    const nextItem = oMappingContainer.getItems()[index + 1];
-                    if (nextItem && nextItem.isA("sap.m.Select")) {
-                        const selectedKey = nextItem.getSelectedKey();
+
+            oMappingContainer.getItems().forEach((oHBox) => {
+                if (oHBox.isA("sap.m.HBox")) {
+                    const aItems = oHBox.getItems();
+                    const oLabel = aItems[0];
+                    const oSelect = aItems[1];
+
+                    if (oLabel && oLabel.isA("sap.m.Label") && oSelect && oSelect.isA("sap.m.Select")) {
+                        const labelText = oLabel.getText();
+                        const selectedKey = oSelect.getSelectedKey();
+
                         if (selectedKey) {
                             mappings.push({
                                 label: labelText,
@@ -202,14 +185,16 @@ sap.ui.define([
                     }
                 }
             });
+
             const description = oDescriptionInput.getValue();
 
             const content = this._fileContent.slice(1).map(row => {
                 const obj = {};
                 row.forEach((cell, index) => {
                     const header = this._headers[index];
-                    if (mappings.some(mapping => mapping.label === header)) {
-                        obj[header] = cell;
+                    const mapping = mappings.find(m => m.label === header);
+                    if (mapping) {
+                        obj[mapping.selected] = cell;
                     }
                 });
                 return obj;
@@ -217,33 +202,63 @@ sap.ui.define([
 
             apiService.saveHeader({ description })
                 .then(header => {
+                    console.log("header", header);
                     return apiService.saveDetails({
-                        goalHeader: {id : header.data.data.id},
+                        goalHeader: { id: header.data.data.id },
                         content: JSON.stringify(content)
                     });
                 })
                 .then(() => {
                     MessageToast.show("Datos guardados exitosamente.");
                     sap.ui.getCore().getEventBus().publish("GoalChannel", "DataUpdated");
-                    this._reset();
                 })
                 .catch(error => {
                     MessageToast.show("Error al guardar los datos.");
                 });
+
             this.onCloseImportDialog();
         },
 
-        _reset: function () {
-            this.byId("fileUploader").setValue("");
-            this.byId("contentTable").setVisible(false);
-            this.byId("headerMapping").setVisible(false);
-            this.byId("descriptionInput").setVisible(false);
-            this._currentStep = 1;
-            const oScrollContainer = this.byId("scrollContainer");
-            oScrollContainer.setHeight("0px")
+        _navigateTo: function (sPageId) {
+            const oNavContainer = this.byId("navContainer");
+            oNavContainer.to(this.byId(sPageId), "slide");
         },
 
         onCloseImportDialog: function () {
+            this._fileContent = null;
+            this._headers = [];
+            this._fileUploaded = false;
+        
+            // Navegar a la página inicial
+            const oNavContainer = this.byId("navContainer");
+            oNavContainer.to(this.byId("fileUploaderPage"));
+        
+            // Limpiar el FileUploader
+            const oFileUploader = this.byId("fileUploader");
+            if (oFileUploader) {
+                oFileUploader.setValue(""); // Restablecer el valor del FileUploader
+            }
+        
+            // Limpiar la tabla
+            const oTable = this.byId("contentTable");
+            if (oTable) {
+                oTable.removeAllColumns();
+                oTable.removeAllItems();
+                oTable.setVisible(false);
+            }
+        
+            // Limpiar el contenedor de mapeo
+            const oMappingContainer = this.byId("headerMapping");
+            if (oMappingContainer) {
+                oMappingContainer.removeAllItems();
+            }
+        
+            // Limpiar el campo de descripción
+            const oDescriptionInput = this.byId("descriptionInput");
+            if (oDescriptionInput) {
+                oDescriptionInput.setValue("");
+            }
+        
             this.byId("importDataDialog").close();
         }
     });

@@ -1,3 +1,5 @@
+
+
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/m/MessageToast",
@@ -5,19 +7,24 @@ sap.ui.define([
     "sap/m/Column",
     "sap/m/Text",
     "sap/m/ColumnListItem",
+    "sap/m/Toolbar",
+    "sap/m/Button",
+    "sap/m/ToolbarSpacer",
+    "myApp/service/apiService",
     "sap/ui/core/mvc/XMLView",
-    "myApp/service/apiService"
-], function (Controller, MessageToast, JSONModel, Column, Text, ColumnListItem, XMLView, apiService) {
+], function (Controller, MessageToast, JSONModel, Column, Text, ColumnListItem, Toolbar, Button, ToolbarSpacer, apiService, XMLView) {
     "use strict";
 
     return Controller.extend("myApp.controller.Goals", {
         onInit: function () {
             this._views = {};
-            var oGoalModel = new JSONModel();
-            var oSelectedGoalModel = new JSONModel();
-            var oViewModel = new JSONModel({
+            const oGoalModel = new JSONModel();
+            const oSelectedGoalModel = new JSONModel();
+            const oViewModel = new JSONModel({
                 isTableVisible: true,
-                isDetailVisible: false
+                isDetailVisible: false,
+                currentPage: 1,
+                totalPages: 0
             });
 
             this.getView().setModel(oGoalModel, "goalModel");
@@ -30,17 +37,16 @@ sap.ui.define([
         },
 
         _onDataUpdated: function () {
-            this._loadGoalsData(); // Volver a cargar los datos
+            this._loadGoalsData();
             MessageToast.show("Datos actualizados en la tabla.");
         },
 
         _loadGoalsData: function () {
-            var oModel = this.getView().getModel("goalModel");
+            const oModel = this.getView().getModel("goalModel");
 
-            apiService
-                .getGoals()
+            apiService.getGoals()
                 .then(response => {
-                    oModel.setData({ goals: response.data });
+                    oModel.setData({ goals: response.data.data });
                 })
                 .catch(error => {
                     MessageToast.show("Error al cargar los datos: " + error.message);
@@ -48,28 +54,30 @@ sap.ui.define([
         },
 
         onViewDetails: function (oEvent) {
-            var oButton = oEvent.getSource();
-            var oContext = oButton.getBindingContext("goalModel");
+            const oButton = oEvent.getSource();
+            const oContext = oButton.getBindingContext("goalModel");
 
             if (!oContext) {
                 MessageToast.show("Error: No se pudo obtener el contexto.");
                 return;
             }
 
-            var oData = oContext.getObject();
-            var oViewModel = this.getView().getModel("viewModel");
-            apiService
-                .getGoalDetails(oData.id)
+            const oData = oContext.getObject();
+            const oViewModel = this.getView().getModel("viewModel");
+
+            apiService.getGoalDetails(oData.id)
                 .then(response => {
-                    if (response.data.content) {
-                        this._createContentTable(JSON.parse(response.data.content));
+                    if (response.data.data.content) {
+                        const content = JSON.parse(response.data.data.content);
+                        this.getView().getModel("goalModel").setProperty("/details", content);
+                        this._createContentTable(content);
                     } else {
                         MessageToast.show("No hay contenido disponible.");
                     }
 
-                    // Cambiar visibilidad
                     oViewModel.setProperty("/isTableVisible", false);
                     oViewModel.setProperty("/isDetailVisible", true);
+                    this.selectedGoal =  oData.id;
                 })
                 .catch(error => {
                     MessageToast.show("Error al cargar el detalle: " + error.message);
@@ -77,40 +85,246 @@ sap.ui.define([
         },
 
         _createContentTable: function (aContent) {
-            var oTable = this.getView().byId("contentTable");
+            const oTable = this.getView().byId("contentTable");
+            const oViewModel = this.getView().getModel("viewModel");
 
-            // Eliminar columnas y elementos existentes
             oTable.removeAllColumns();
             oTable.removeAllItems();
 
-            if (aContent.length === 0) {
+            if (!aContent || aContent.length === 0) {
+                MessageToast.show("No hay datos para mostrar.");
+                oTable.setVisible(true);
                 return;
             }
 
-            // Crear columnas dinámicas
-            var aKeys = Object.keys(aContent[0]);
-            console.log("aKeys", aKeys)
+            oTable.setVisible(true);
+            const aKeys = Object.keys(aContent[0]);
             aKeys.forEach(key => {
                 oTable.addColumn(new Column({
-                    header: new Text({ text: key })
+                    header: new Text({ text: key }),
+                    hAlign: "Center"
                 }));
             });
 
-            // Crear filas dinámicas
-            aContent.forEach(row => {
-                var aCells = aKeys.map(key => new Text({ text: row[key] }));
-                var oRow = new ColumnListItem({ cells: aCells });
-                oTable.addItem(oRow);
+            oTable.addColumn(new Column({
+                header: new Text({ text: "Acciones" }),
+                hAlign: "Center"
+            }));
+
+            const iPageSize = 10;
+            const iTotalPages = Math.ceil(aContent.length / iPageSize);
+            oViewModel.setProperty("/totalPages", iTotalPages);
+
+            const renderTablePage = (page) => {
+                oTable.removeAllItems();
+
+                const iStart = (page - 1) * iPageSize;
+                const iEnd = iStart + iPageSize;
+                const aPageContent = aContent.slice(iStart, iEnd);
+                console.log("apageContent", aPageContent)
+                aPageContent.forEach((row, rowIndex) => {
+                    const aCells = aKeys.map(key => 
+                        new sap.m.Input({
+                            value: `{goalModel>/details/${iStart + rowIndex}/${key}}`,
+                            editable: true
+                        })
+                    );
+
+                    const oDeleteButton = new Button({
+                        text: "Eliminar",
+                        icon: "sap-icon://delete",
+                        press: () => this.onDeleteRow(iStart + rowIndex)
+                    });
+
+                    const oActionCell = new sap.m.HBox({
+                        items: [oDeleteButton],
+                        justifyContent: "Center"
+                    });
+
+                    aCells.push(oActionCell);
+
+                    oTable.addItem(new ColumnListItem({
+                        cells: aCells
+                    }));
+                });
+            };
+
+            renderTablePage(oViewModel.getProperty("/currentPage"));
+
+            const oToolbar = this._createPaginationToolbar(renderTablePage, oViewModel);
+            oTable.setHeaderToolbar(oToolbar);
+        },
+
+        _createPaginationToolbar: function (renderTablePage, oViewModel) {
+            return new Toolbar({
+                content: [
+                    new Button({
+                        text: "Anterior",
+                        enabled: "{= ${viewModel>/currentPage} > 1 }",
+                        press: () => {
+                            const currentPage = oViewModel.getProperty("/currentPage");
+                            if (currentPage > 1) {
+                                oViewModel.setProperty("/currentPage", currentPage - 1);
+                                renderTablePage(currentPage - 1);
+                            }
+                        }
+                    }),
+                    new Text({
+                        text: "Página {viewModel>/currentPage} de {viewModel>/totalPages}"
+                    }),
+                    new Button({
+                        text: "Siguiente",
+                        enabled: "{= ${viewModel>/currentPage} < ${viewModel>/totalPages} }",
+                        press: () => {
+                            const currentPage = oViewModel.getProperty("/currentPage");
+                            const totalPages = oViewModel.getProperty("/totalPages");
+                            if (currentPage < totalPages) {
+                                oViewModel.setProperty("/currentPage", currentPage + 1);
+                                renderTablePage(currentPage + 1);
+                            }
+                        }
+                    }),
+                    new ToolbarSpacer(),
+                    new Button({
+                        text: "Guardar Masivo",
+                        icon: "sap-icon://save",
+                        press: () => this.onSave()
+                    }),
+                    new Button({
+                        text: "Agregar Registro",
+                        icon: "sap-icon://add",
+                        press: () => this.onAddRow()
+                    })
+                ]
             });
         },
 
-        onNavBack: function () {
-            var oViewModel = this.getView().getModel("viewModel");
+        _updatePaginationButtons: function (oFooterToolbar, iCurrentPage, iTotalPages) {
+            const aButtons = oFooterToolbar.getContent();
+            const oPreviousButton = aButtons[0];
+            const oNextButton = aButtons[2];
+            const oPageText = aButtons[1];
 
+            oPreviousButton.setEnabled(iCurrentPage > 1);
+            oNextButton.setEnabled(iCurrentPage < iTotalPages);
+            oPageText.setText(`Página ${iCurrentPage} de ${iTotalPages}`);
+        },
+
+        onPrintDetails: function (oEvent) {
+            const oContext = oEvent.getSource().getBindingContext("goalModel");
+            const oData = oContext.getObject();
+
+            const doc = new jsPDF();
+
+            doc.setFontSize(12);
+            doc.text("Detalles de la Cabecera", 10, 10);
+
+            // Datos de la cabecera
+            doc.setFontSize(10);
+            doc.text(`ID: ${oData.id}`, 10, 20);
+            doc.text(`Descripción: ${oData.description}`, 10, 30);
+            doc.text(`Creado por: ${oData.createdBy}`, 150, 20);
+            doc.text(`Modificado por: ${oData.modifiedBy}`, 150, 30);
+            doc.text(`Estado: ${oData.status}`, 10, 40);
+
+            apiService.getGoalDetails(oData.id)
+                .then(response => {
+                    if (response.data.data.content) {
+                        const aDetails = JSON.parse(response.data.data.content);
+                        const columns = Object.keys(aDetails[0]);
+                        const rows = aDetails.map(detail => columns.map(col => detail[col]));
+
+                        doc.autoTable({
+                            startY: 50,
+                            head: [columns],
+                            body: rows,
+                            theme: 'grid',
+                            headStyles: { fillColor: [148, 99, 174] }
+                        });
+
+                        doc.save(`Detalle_Meta_${oData.id}.pdf`);
+                    } else {
+                        MessageToast.show("No hay contenido asociado para imprimir.");
+                    }
+                })
+                .catch(error => {
+                    MessageToast.show("Error al obtener los detalles: " + error.message);
+                });
+        },
+
+        onSave: function (rowIndex) {
+            const oModel = this.getView().getModel("goalModel");
+            const content = oModel.getProperty(`/details`);
+            console.log("goalModelDetails",content)
+            const requestDetails = { id: this.selectedGoal, content: JSON.stringify(content) };
+            apiService.updateDetails(requestDetails)
+                .then(response => {
+                    MessageToast.show("Registro actualizado correctamente.");
+                })
+                .catch(error => {
+                    MessageToast.show("Error al actualizar el registro: " + error.message);
+                });
+        },
+
+        onAddRow: function () {
+            const oModel = this.getView().getModel("goalModel");
+            const content = oModel.getProperty("/details");
+        
+            // Asegurarnos de que los datos de la tabla existan
+            if (!content) {
+                MessageToast.show("No hay detalles cargados. Por favor, verifique los datos.");
+                return;
+            }
+        
+            // Crear un nuevo registro inicializado basado en las claves
+            const newRecord = {};
+            const keys = Object.keys(content[0]); // Obtener las claves del primer registro existente
+        
+            // Inicializar las propiedades del nuevo registro con valores vacíos o predeterminados
+            keys.forEach(key => {
+                newRecord[key] = ""; // Puedes asignar un valor predeterminado si es necesario
+            });
+        
+            // Agregar el nuevo registro al array de detalles
+            content.unshift(newRecord);
+        
+            // Actualizar el modelo con el array modificado
+            oModel.setProperty("/details", content);
+        
+            MessageToast.show("Nuevo registro agregado. Complete los datos y guarde los cambios.");
+        },
+
+        onDeleteRow: function (rowIndex) {
+            const oModel = this.getView().getModel("goalModel");
+            const content = oModel.getProperty("/details");
+        
+            if (content && content[rowIndex]) {
+                content.splice(rowIndex, 1);
+        
+                oModel.setProperty("/details", content);
+        
+                const requestDetails = { 
+                    id: this.selectedGoal, 
+                    content: JSON.stringify(content) 
+                };
+        
+                apiService.updateDetails(requestDetails)
+                    .then(response => {
+                        MessageToast.show("Registro eliminado correctamente.");
+                    })
+                    .catch(error => {
+                        MessageToast.show("Error al eliminar el registro: " + error.message);
+                    });
+            } else {
+                MessageToast.show("No se encontró la fila para eliminar.");
+            }
+        },
+        
+        onNavBack: function () {
+            const oViewModel = this.getView().getModel("viewModel");
             oViewModel.setProperty("/isTableVisible", true);
             oViewModel.setProperty("/isDetailVisible", false);
         },
-
         onOpenImportDialog: function () {
             var sViewName = "myApp.view.ImportDialog";
 
@@ -137,67 +351,6 @@ sap.ui.define([
                     MessageToast.show("Error: No se pudo encontrar el diálogo en la vista.");
                 }
             }
-        },
-
-        onExportData: function () {
-            MessageToast.show("Exportar Data aún no implementado.");
-        },
-
-        onPrintDetails: function (oEvent) {
-            const oContext = oEvent.getSource().getBindingContext("goalModel");
-            const oData = oContext.getObject();
-        
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-        
-            doc.setFontSize(12);
-            doc.text("Detalles de la Cabecera", 10, 10);
-        
-            // Cambiar tamaño de letra para los datos de la cabecera
-            doc.setFontSize(10);
-            doc.text(`ID: ${oData.id}`, 10, 20);
-            doc.text(`Descripción: ${oData.description}`, 10, 30);
-            doc.text(`Creado por: ${oData.createdBy}`, 150, 20);
-            doc.text(`Modificado por: ${oData.modifiedBy}`, 150, 30);
-            doc.text(`Estado: ${oData.status}`, 10, 40);
-        
-            // Obtener detalles asociados a la cabecera
-            apiService
-                .getGoalDetails(oData.id)
-                .then(response => {
-                    if (response.data.content) {
-                        const aDetails = JSON.parse(response.data.content);
-                        doc.setFontSize(10);
-                        // Preparar datos para la tabla
-                        const columns = Object.keys(aDetails[0]).map(key => ({ header: key, dataKey: key }));
-                        const rows = aDetails;
-        
-                        // Configurar opciones de la tabla
-                        doc.autoTable({
-                            startY: 50, // Comienza debajo del texto
-                            head: [columns.map(col => col.header)], // Nombres de las columnas
-                            body: rows.map(row => columns.map(col => row[col.dataKey])), // Datos de las filas
-                            theme: 'grid', // Estilo de la tabla
-                            headStyles: { fillColor: [148, 99, 174] }, // Color del encabezado
-                            bodyStyles: { textColor: [0, 0, 0] }, // Color del texto
-                            margin: { top: 10, bottom: 10 }, // Márgenes de la tabla
-                            didDrawPage: function (data) {
-                                // Agregar un pie de página
-                                const pageHeight = doc.internal.pageSize.height;
-                                doc.setFontSize(8);
-                                doc.text(`Página ${doc.internal.getNumberOfPages()}`, 10, pageHeight - 10);
-                            },
-                        });
-        
-                        // Guardar el PDF
-                        doc.save(`Detalle_Meta_${oData.id}.pdf`);
-                    } else {
-                        MessageToast.show("No hay contenido asociado para imprimir.");
-                    }
-                })
-                .catch(error => {
-                    MessageToast.show("Error al obtener los detalles: " + error.message);
-                });
         }
-    });
+    })
 });

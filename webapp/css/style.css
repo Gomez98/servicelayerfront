@@ -1,85 +1,15 @@
-.buttonContainer {
-    padding: 16px; /* Espacio alrededor del contenedor */
+html[dir="ltr"] .myAppDemoWT .myCustomButton.sapMBtn  {
+	margin-right: 0.125rem
 }
 
-.simpleButton {
-    padding-left: 8px;
+html[dir="rtl"] .myAppDemoWT .myCustomButton.sapMBtn {
+	margin-left: 0.125rem
 }
- 
 
-.userHeader {
-    padding: 0px 16px; /* Espaciado del header */
-    
-  }
+.myAppDemoWT .myCustomHome {
+	cursor: pointer;
+}
+
+.myAppDemoWT .myCustomFileUploader{
   
-  .userInfo {
-    gap: 8px; /* Espaciado entre el nombre y el avatar */
-  }
-  
-  .userName {
-    font-size: 1rem;
-    font-weight: bold;
-  }
-  .simpleAvatar {
-    vertical-align: middle; /* Asegura el alineado dentro del texto */
-    padding-left: 5px;
-  }
-
-/* Contenedor principal */
-.loginContainer {
-  background-color: #f9f9f9;
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  height: 100%;
-}
-
-/* Encabezado del formulario */
-.loginHeader {
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.logoAvatar {
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.loginTitle {
-  font-family: Arial, sans-serif;
-  color: #333;
-  font-size: 24px;
-}
-
-/* Formulario de inicio de sesión */
-.loginForm {
-  background-color: #ffffff;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 20px;
-  gap: 10px;
-  width: 300px;
-}
-
-.loginLabel {
-  font-size: 14px;
-  color: #555;
-}
-
-.loginInput {
-  border-radius: 5px;
-  border: 1px solid #ccc;
-}
-
-/* Botón de inicio de sesión */
-.loginButton {
-  width: 100%;
-  background-color: #007bff;
-  color: white;
-  border-radius: 5px;
-}
-
-
-.button-container > .sapMBtn:not(:last-child) {
-  margin-right: 8px;
 }

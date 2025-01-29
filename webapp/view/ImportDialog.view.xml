@@ -3,73 +3,105 @@
   xmlns="sap.m"
   xmlns:mvc="sap.ui.core.mvc"
   xmlns:unified="sap.ui.unified">
-  <Dialog id="importDataDialog" title="Importar Data" resizable="true">
+  <Dialog
+    id="importDataDialog"
+    showHeader="false"
+    contentHeight="150px"
+    contentWidth="400px"
+  >
     <content>
-      <VBox id="dynamicContent" justifyContent="Center" alignItems="Center">
-        <!-- FileUploader -->
-        <HBox justifyContent="Center" alignItems="Center">
-          <unified:FileUploader
-            id="fileUploader"
-            name="file"
-            fileType="xlsx,csv"
-            sendXHR="true"
-            change="onFileChange"
-            tooltip="Selecciona un archivo para cargar" />
-        </HBox>
+      <NavContainer
+        id="navContainer"
+        initialPage="fileUploaderPage">
+        <Page id="fileUploaderPage" title="Cargar Archivo">
+          <content>
+            <FlexBox
+              id="menuContainer"
+              alignItems="Center"
+              justifyContent="Center">
+              <unified:FileUploader
+                id="fileUploader"
+                class="sapUiTinyMargin"
+                name="file"
+                fileType="xlsx,csv"
+               
+                icon="sap-icon://upload"
+       
+                buttonText="Cargar"
+                change="onFileChange"
+                tooltip="Selecciona un archivo para cargar" />
+            </FlexBox>
 
-        <!-- ScrollContainer para la tabla -->
-        <ScrollContainer
-          id="scrollContainer"
-          width="100%"
-          horizontal="true"
-          vertical="true">
-          <Table id="contentTable" visible="false" fixedLayout="false" width="1200px">
-            <headerToolbar>
-              <OverflowToolbar>
-                <Title text="Contenido del Archivo" />
-              </OverflowToolbar>
-            </headerToolbar>
-          </Table>
-        </ScrollContainer>
+          </content>
+          <footer>
+            <Toolbar>
+              <ToolbarSpacer />
+              <Button
+                text="Aceptar"
+                type="Emphasized"
+                press="onAccept" />
+            </Toolbar>
+          </footer>
+        </Page>
 
-        <!-- Contenedor para los Selects dinámicos -->
-        <VBox id="headerMapping" visible="false">
-          <Title text="Enlace de Cabeceras con Campos Maestros" />
-        </VBox>
+        <!-- Página de la Tabla -->
+        <Page id="tablePage" showNavButton="true" navButtonPress="onNavBack"
+          title="Visualizar Archivo">
+          <content>
+            <VBox>
+              <Table id="contentTable">
+              </Table>
+            </VBox>
+          </content>
+          <footer>
+            <Toolbar>
+              <ToolbarSpacer />
+              <Button
+                text="Aceptar"
+                type="Emphasized"
+                press="onAccept" />
+            </Toolbar>
+          </footer>
+        </Page>
 
-        <!-- Input para ingresar descripción -->
-        <Input
-          id="descriptionInput"
-          visible="false"
-          placeholder="Ingrese una descripción" />
-      </VBox>
+        <!-- Página de Mapeo de Cabeceras -->
+        <Page id="headerMappingPage" showNavButton="true" navButtonPress="onNavBack"
+          title="Mapeo Cabeceras">
+          <content>
+            <VBox id="headerMapping">
+            </VBox>
+          </content>
+           <footer>
+            <Toolbar>
+              <ToolbarSpacer />
+              <Button
+                text="Aceptar"
+                type="Emphasized"
+                press="onAccept" />
+            </Toolbar>
+          </footer>
+        </Page>
+
+        <Page id="descriptionPage" showNavButton="true" navButtonPress="onNavBack"
+          title="Nombre de la meta">
+          <content>
+            <VBox>
+              <Input
+                id="descriptionInput"
+                placeholder="Ingrese una descripción" />
+            </VBox>
+          </content>
+           <footer>
+            <Toolbar>
+              <ToolbarSpacer />
+              <Button
+                text="Finalizar"
+                type="Emphasized"
+                press="onFinish" />
+            </Toolbar>
+          </footer>
+        </Page>
+      </NavContainer>
     </content>
-    <buttons>
-      <Button
-        id="actionButton"
-        text="Procesar Archivo"
-        type="Emphasized"
-        press="onActionButtonPress"
-        visible="false" />
-      <Button text="Cerrar" press="onCloseImportDialog" />
-    </buttons>
-  </Dialog>
-
-  <!-- Modal para mostrar la barra de progreso -->
-  <Dialog id="loadingDialog" title="Procesando Archivo" draggable="false" resizable="false">
-    <content>
-      <VBox justifyContent="Center" alignItems="Center" class="sapUiSmallMargin" width='500px'>
-        <Text text="Cargando Archivo..." />
-        <ProgressIndicator
-          id="progressIndicator"
-          percentValue="0"
-          displayValue="0%"
-          width="100%"
-          height="2rem"
-        />
-
-      </VBox>
-    </content>
-
   </Dialog>
 </mvc:View>

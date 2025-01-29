@@ -4,6 +4,9 @@
   xmlns:mvc="sap.ui.core.mvc">
 
   <Page>
+    <headerContent>
+
+    </headerContent>
     <content>
       <VBox
         class="loginContainer"
@@ -11,14 +14,14 @@
         alignItems="Center">
         <VBox
           class="loginForm">
-           <HBox
-          alignItems="Center"
-          class="loginHeader">
-          <Title
-            text="Bienvenido al Sistema"
-            level="H1"
-            class="loginTitle" />
-        </HBox>
+          <HBox
+            alignItems="Center"
+            class="loginHeader">
+            <Title
+              text="Bienvenido al Sistema"
+              level="H1"
+              class="loginTitle" />
+          </HBox>
           <Label
             text="Usuario"
             class="loginLabel" />

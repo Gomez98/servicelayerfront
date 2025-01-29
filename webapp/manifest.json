@@ -43,38 +43,32 @@
       "routes": [
         {
           "pattern": "",
-          "name": "Login",
-          "target": [
-            "TargetLogin"
-          ]
+          "name": "login",
+          "target": "login"
         },
         {
           "pattern": "main",
-          "name": "Main",
-          "target": [
-            "TargetMain"
-          ]
+          "name": "main",
+          "target": "main"
         },
         {
           "pattern": "details",
-          "name": "Detail",
-          "target": [
-            "TargetDetails"
-          ]
+          "name": "details",
+          "target": "details"
         }
       ],
       "targets": {
-        "TargetLogin": {
+        "login": {
           "viewName": "Login",
-          "viewType": "XML"
+          "viewId": "login"
         },
-        "TargetMain": {
+        "main": {
           "viewName": "Main",
-          "viewType": "XML"
+          "viewId": "main"
         },
-        "TargetDetails": {
-          "viewName": "Detail",
-          "viewType": "XML"
+        "details": {
+          "viewName": "Details",
+          "viewId": "details"
         }
       }
     }
