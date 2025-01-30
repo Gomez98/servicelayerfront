@@ -81,6 +81,7 @@
             id="menuContainer"
             alignItems="Center"
             justifyContent="Center"
+            height="inherit"
             wrap="Wrap"
             visible="{viewModel>/isCardMenuVisible}">
 
