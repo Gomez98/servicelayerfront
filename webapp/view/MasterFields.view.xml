@@ -2,34 +2,43 @@
     controllerName="myApp.controller.MasterFields"
     xmlns="sap.m"
     xmlns:mvc="sap.ui.core.mvc">
-    <Table id="idMasterFields" items="{camposModel>/fields}">
-        <headerToolbar>
-            <OverflowToolbar>
-                <Title text="Campos Maestros" />
-                <ToolbarSpacer />
-                <Button text="Crear" press="onOpenCreateDialog" />
-            </OverflowToolbar>
-        </headerToolbar>
-        <columns>
-            <Column>
-                <Text text="Nombre" />
-            </Column>
-            <Column>
-                <Text text="Estado" />
-            </Column>
-        </columns>
-        <items>
-            <ColumnListItem>
-                <cells>
-                    <Text text="{camposModel>name}" />
-                </cells>
-                <cells>
-                    <Switch state="{camposModel>active}" change="onChangeActiveState" />
-                </cells>
-            </ColumnListItem>
-        </items>
-    </Table>
 
+    <ScrollContainer
+        height="95vh"
+        vertical="true">
+        <Table id="idMasterFields"
+            growing="true"
+            sticky="ColumnHeaders,HeaderToolbar"
+            growingScrollToLoad="true"
+            growingThreshold="10"
+            items="{camposModel>/fields}">
+            <headerToolbar>
+                <OverflowToolbar>
+                    <Title text="Campos Maestros" />
+                    <ToolbarSpacer />
+                    <Button text="Crear" press="onOpenCreateDialog" />
+                </OverflowToolbar>
+            </headerToolbar>
+            <columns>
+                <Column>
+                    <Text text="Nombre" />
+                </Column>
+                <Column>
+                    <Text text="Estado" />
+                </Column>
+            </columns>
+            <items>
+                <ColumnListItem>
+                    <cells>
+                        <Text text="{camposModel>name}" />
+                    </cells>
+                    <cells>
+                        <Switch state="{camposModel>active}" change="onChangeActiveState" />
+                    </cells>
+                </ColumnListItem>
+            </items>
+        </Table>
+    </ScrollContainer>
     <Dialog id="idCreateMasterFieldDialog" title="Crear Campo Maestro">
         <content>
             <VBox>

@@ -8,12 +8,21 @@
   <Page>
     <headerContent>
       <HBox
+        id="menuIconContainer"
+        alignItems="Center"
+        visible="{viewModel>/isMenuIconContainer}"
+        class="sapUiTinyMargin myCustomHome">
+        <core:Icon
+          src="sap-icon://menu2"
+          class="myCustomHome" />
+      </HBox>
+      <HBox
         id="homeContainer"
         alignItems="Center"
         class="sapUiTinyMargin myCustomHome">
         <core:Icon
-          src="sap-icon://home" 
-          class="myCustomHome"/>
+          src="sap-icon://home"
+          class="myCustomHome" />
         <Text
           text="Inicio"
           class="sapUiTinyMargin myCustomHome"
@@ -33,45 +42,51 @@
     <content>
       <tnt:ToolPage>
         <tnt:sideContent>
-          <!-- Menú Lateral (SideNavigation) -->
-          <tnt:SideNavigation
-            itemSelect="onSideNavItemSelect"
-            visible="{viewModel>/isSideNavVisible}">
-            <tnt:NavigationList>
-              <tnt:NavigationListItem
-                text="Metas"
-                icon="sap-icon://goal"
-                key="metas"
-                visible="{viewModel>/metasVisible}">
+          <tnt:SideNavigation id="sideNavId" visible="{viewModel>/isSideNavVisible}">
+            <tnt:item>
+              <tnt:NavigationList
+                itemSelect="onSideNavItemSelect">
+                <tnt:NavigationListGroup
+                  text="Metas"
+                  key="metas"
+                  visible="{viewModel>/metasVisible}">
+                  <tnt:NavigationListItem
+                    text="Ver Metas"
+                    icon="sap-icon://goal"
+                    key="verMetas"
+                    visible="{viewModel>/metasVisible}">
+                  </tnt:NavigationListItem>
+                  <tnt:NavigationListItem
+                    text="Campos Maestros"
+                    icon="sap-icon://filter-facets"
+                    key="camposMaestros"
+                    visible="{viewModel>/metasVisible}">
+                  </tnt:NavigationListItem>
+                </tnt:NavigationListGroup>
                 <tnt:NavigationListItem
-                  text="Ver Metas"
-                  key="verMetas" />
+                  text="Reportes"
+                  icon="sap-icon://company-view"
+                  key="reports"
+                  visible="{viewModel>/reportsVisible}">
+                </tnt:NavigationListItem>
                 <tnt:NavigationListItem
-                  text="Campos Maestros"
-                  key="camposMaestros" />
-              </tnt:NavigationListItem>
-
-              <tnt:NavigationListItem
-                text="Reportes"
-                icon="sap-icon://company-view"
-                key="reports"
-                visible="{viewModel>/reportsVisible}" />
-
-              <tnt:NavigationListItem
-                text="Servicios"
-                icon="sap-icon://crm-service-manager"
-                key="servicios"
-                visible="{viewModel>/servicesVisible}" />
-            </tnt:NavigationList>
-            <tnt:footer>
+                  text="Servicios"
+                  icon="sap-icon://crm-service-manager"
+                  key="servicios"
+                  visible="{viewModel>/servicesVisible}">
+                </tnt:NavigationListItem>
+              </tnt:NavigationList>
+            </tnt:item>
+            <tnt:fixedItem>
               <tnt:NavigationList>
                 <tnt:NavigationListItem
                   text="Cerrar Sesión"
                   icon="sap-icon://log"
                   key="logout"
-                  visible="{viewModel>/logoutVisible}" />
+                  visible="{viewModel>/logoutVisible}">
+                </tnt:NavigationListItem>
               </tnt:NavigationList>
-            </tnt:footer>
+            </tnt:fixedItem>
           </tnt:SideNavigation>
         </tnt:sideContent>
 

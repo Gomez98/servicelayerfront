@@ -10,11 +10,25 @@ sap.ui.define([
   return Controller.extend("myApp.controller.Main", {
 
     onInit: function () {
-      this._views = {}; // Cache para las vistas dinámicas
-      this._initializeModels(); // Inicializar modelos
-      this._checkAuthentication(); // Verificar si el usuario está autenticado
-      this._updateUserData(); // Cargar datos del usuario
+      this._views = {};
+      this._initializeModels();
+      this._checkAuthentication();
+      this._updateUserData();
       this._setupTapEvent();
+      this.onToggleSideContent();
+    },
+
+    onToggleSideContent: function () {
+      const homeContainer = this.getView().byId("menuIconContainer");
+      if (homeContainer) {
+        homeContainer.attachBrowserEvent("click", this.onIconContainerPress.bind(this));
+      }
+    },
+
+    onIconContainerPress: function () {
+      const oSideNavigation = this.byId("sideNavId");
+      const bExpanded = oSideNavigation.getExpanded();
+      oSideNavigation.setExpanded(!bExpanded);
     },
 
     _setupTapEvent: function () {
@@ -37,21 +51,24 @@ sap.ui.define([
         metasVisible: false,
         reportsVisible: false,
         serviciosVisible: false,
-        logoutVisible: true // Siempre visible
+        logoutVisible: true,
+        isSideNavExpanded: true,
+        isMenuIconContainer: false
       });
+
       this.getView().setModel(viewModel, "viewModel");
     },
 
     onHomePress: function () {
       const viewModel = this.getView().getModel("viewModel");
       viewModel.setProperty("/isCardMenuVisible", true);
+      viewModel.setProperty("/isMenuIconContainer", false);
       viewModel.setProperty("/isSideNavVisible", false);
     },
 
     onSideNavItemSelect: function (oEvent) {
       const sKey = oEvent.getParameter("item").getKey(); // Obtén la clave del ítem seleccionado
       const viewModel = this.getView().getModel("viewModel");
-      console.log("SKEY", sKey)
       switch (sKey) {
         case "metas":
           viewModel.setProperty("/isCardMenuVisible", false);
@@ -103,20 +120,17 @@ sap.ui.define([
 
     onCardSelect: function (oEvent) {
       const customData = oEvent.getSource().getCustomData().find(data => data.getKey() === "action");
-      if (!customData) {
-        MessageToast.show("Opción no reconocida.");
-        return;
-      }
 
       const key = customData.getValue();
       const viewModel = this.getView().getModel("viewModel");
 
       viewModel.setProperty("/isCardMenuVisible", false);
       viewModel.setProperty("/isSideNavVisible", true);
+      viewModel.setProperty("/isMenuIconContainer", true);
       viewModel.setProperty("/metasVisible", false);
       viewModel.setProperty("/reportsVisible", false);
       viewModel.setProperty("/servicesVisible", false);
-
+      console.log("KEY", key)
       switch (key) {
         case "metas":
           viewModel.setProperty("/metasVisible", true);
@@ -147,16 +161,14 @@ sap.ui.define([
       }
 
       oDynamicContent.removeAllItems();
-      console.log("viewName", viewName)
       if (!this._views[viewName]) {
         sap.ui.core.mvc.XMLView.create({ viewName })
           .then(oView => {
+            console.log("oView", oView)
             this._views[viewName] = oView;
             oDynamicContent.addItem(oView);
           })
-          .catch(error => {
-            console.error(`Error al cargar la vista ${viewName}:`, error);
-          });
+          
       } else {
         oDynamicContent.addItem(this._views[viewName]);
       }
@@ -164,14 +176,14 @@ sap.ui.define([
 
     _logout: function () {
       sessionStorage.removeItem("jwt");
-      sap.ui.core.UIComponent.getRouterFor(this).navTo("login", {}, true);
+      sap.ui.core.UIComponent.getRouterFor(this).navTo("login");
       MessageToast.show("Has cerrado sesión correctamente.");
     },
 
     _checkAuthentication: function () {
       const token = sessionStorage.getItem("jwt");
       if (!token) {
-        sap.ui.core.UIComponent.getRouterFor(this).navTo("login", {}, true);
+        sap.ui.core.UIComponent.getRouterFor(this).navTo("login");
         this._showMessage("No autorizado. Redirigiendo al login...", "error");
       }
     },

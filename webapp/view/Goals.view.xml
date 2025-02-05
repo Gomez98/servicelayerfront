@@ -2,74 +2,56 @@
   controllerName="myApp.controller.Goals"
   xmlns="sap.m"
   xmlns:mvc="sap.ui.core.mvc">
-  <VBox>
-    <!-- Sección de la Tabla -->
-    <VBox visible="{viewModel>/isTableVisible}">
-      <HBox justifyContent="End" alignItems="Center">
-        <HBox class="button-container">
-          <Button text="Importar Data" press="onOpenImportDialog" />
-        </HBox>
-      </HBox>
-      <ScrollContainer
-        height="400px"
-        horizontal="true"
-        vertical="true"
-        class="table-scroll">
-        <Table id="idGoalsTable"
-          class="customTableHeader"
-          items="{goalModel>/goals}"
-        >
 
-          <columns>
-            <Column>
-              <Text text="Descripción" />
-            </Column>
-            <Column>
-              <Text text="Estado" />
-            </Column>
-            <Column>
-              <Text text="Ver Detalle" />
-            </Column>
-            <Column>
-              <Text text="Imprimir" />
-            </Column>
-          </columns>
+  <!-- Contenedor principal con flexibilidad -->
+  <FlexBox direction="Column">
+    
+    <!-- Encabezado -->
+    <Toolbar>
+      <Title text="Metas ({goalModel>/goals/totalGoals})" />
+      <ToolbarSpacer />
+      <Button text="Importar Data" press="onOpenImportDialog" icon="sap-icon://home" />
+    </Toolbar>
 
-          <items>
-            <ColumnListItem>
-              <cells>
-                <Text text="{goalModel>description}" />
-                <Text text="{goalModel>status}" />
-                <Button icon="sap-icon://display" press="onViewDetails" tooltip="Ver detalle" />
-                <Button icon="sap-icon://print" press="onPrintDetails" tooltip="Imprimir en PDF" />
-              </cells>
-            </ColumnListItem>
-          </items>
+    <!-- Contenedor Scrollable a pantalla completa -->
+    <ScrollContainer
+      height="95vh"
+      vertical="true">
+      
+      <!-- Tabla de Metas -->
+      <Table id="idGoalsTable"
+        growing="true"
+        sticky="ColumnHeaders,HeaderToolbar"
+        growingScrollToLoad="true"
+        growingThreshold="10"
+        items="{goalModel>/goals/goalHeaders}">
+        <headerToolbar>
+          <OverflowToolbar>
+            <ToolbarSpacer />
+            <SearchField search="onSearch" width="17.5rem" />
+          </OverflowToolbar>
+        </headerToolbar>
+        <columns>
+          <Column>
+            <Text text="Descripción" />
+          </Column>
+          <Column>
+            <Text text="Estado" />
+          </Column>
+        </columns>
+        <items>
+          <ColumnListItem
+            type="Navigation"
+            press="onViewDetails"
+            vAlign="Middle">
+            <cells>
+              <ObjectIdentifier text="{goalModel>description}" />
+              <ObjectIdentifier text="{goalModel>status}" />
+            </cells>
+          </ColumnListItem>
+        </items>
+      </Table>
+    </ScrollContainer>
 
-
-        </Table>
-      </ScrollContainer>
-    </VBox>
-
-    <!-- Sección de Detalles -->
-    <VBox visible="{viewModel>/isDetailVisible}">
-      <Button icon="sap-icon://nav-back" press="onNavBack" tooltip="Volver" />
-      <ScrollContainer
-        height="600px"
-        horizontal="true"
-        vertical="true"
-        class="table-scroll">
-        <Table
-          id="contentTable"
-          visible="{= ${viewModel>/isDetailVisible} }"
-        >
-          <headerToolbar>
-            <OverflowToolbar>
-              <Title text="Contenido Detallado" />
-            </OverflowToolbar>
-          </headerToolbar>
-        </Table>
-      </ScrollContainer>
-    </VBox>
-  </VBox>
+  </FlexBox>
 </mvc:View>

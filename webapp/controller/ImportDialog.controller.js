@@ -210,7 +210,7 @@ sap.ui.define([
                 })
                 .then(() => {
                     MessageToast.show("Datos guardados exitosamente.");
-                    sap.ui.getCore().getEventBus().publish("GoalChannel", "DataUpdated");
+                    /*sap.ui.getCore().getEventBus().publish("GoalChannel", "DataUpdated");*/
                 })
                 .catch(error => {
                     MessageToast.show("Error al guardar los datos.");

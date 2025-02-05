@@ -52,23 +52,25 @@
           "target": "main"
         },
         {
-          "pattern": "details",
-          "name": "details",
-          "target": "details"
+            "pattern": "goals/{goalId}",
+            "name": "goalsDetail",
+            "target": "goalsDetail"
         }
       ],
       "targets": {
         "login": {
           "viewName": "Login",
           "viewId": "login"
+
         },
         "main": {
           "viewName": "Main",
           "viewId": "main"
+
         },
-        "details": {
-          "viewName": "Details",
-          "viewId": "details"
+        "goalsDetail": {
+            "viewName": "GoalsDetail",
+            "viewId": "goalsDetail"
         }
       }
     }
