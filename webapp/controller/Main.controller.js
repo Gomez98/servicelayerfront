@@ -10,24 +10,31 @@ sap.ui.define([
   return Controller.extend("myApp.controller.Main", {
 
     onInit: function () {
+      this._onToggleSideContent();
+
+    },
+    onBeforeRendering: function () {
       this._views = {};
       this._initializeModels();
       this._checkAuthentication();
       this._updateUserData();
       this._setupTapEvent();
-      this.onToggleSideContent();
     },
 
-    onToggleSideContent: function () {
+    _onToggleSideContent: function () {
+      console.log("TOGLE1")
       const homeContainer = this.getView().byId("menuIconContainer");
       if (homeContainer) {
-        homeContainer.attachBrowserEvent("click", this.onIconContainerPress.bind(this));
+        console.log("TOGLE2")
+        homeContainer.attachBrowserEvent("click", this._onIconContainerPress.bind(this));
       }
     },
 
-    onIconContainerPress: function () {
+    _onIconContainerPress: function () {
+      console.log("TOGLE3")
       const oSideNavigation = this.byId("sideNavId");
       const bExpanded = oSideNavigation.getExpanded();
+      console.log("bExpanded",bExpanded)
       oSideNavigation.setExpanded(!bExpanded);
     },
 
@@ -52,10 +59,9 @@ sap.ui.define([
         reportsVisible: false,
         serviciosVisible: false,
         logoutVisible: true,
-        isSideNavExpanded: true,
+        isSideNavExpanded: false,
         isMenuIconContainer: false
       });
-
       this.getView().setModel(viewModel, "viewModel");
     },
 
@@ -69,6 +75,7 @@ sap.ui.define([
     onSideNavItemSelect: function (oEvent) {
       const sKey = oEvent.getParameter("item").getKey(); // Obtén la clave del ítem seleccionado
       const viewModel = this.getView().getModel("viewModel");
+      console.log("sKey",sKey)
       switch (sKey) {
         case "metas":
           viewModel.setProperty("/isCardMenuVisible", false);
@@ -146,6 +153,7 @@ sap.ui.define([
       viewModel.setProperty("/reportsVisible", false);
       viewModel.setProperty("/servicesVisible", false);
       viewModel.setProperty("/convertVisible", false);
+      console.log("KEY",key)
       switch (key) {
         case "metas":
           viewModel.setProperty("/metasVisible", true);
@@ -193,10 +201,17 @@ sap.ui.define([
     },
 
     _logout: function () {
+      // Limpiar sesión
       sessionStorage.removeItem("jwt");
-      sap.ui.core.UIComponent.getRouterFor(this).navTo("login");
+
+      // Navegar al login
+      const oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+      oRouter.navTo("login", {}, true); // true para forzar la recarga
+
       MessageToast.show("Has cerrado sesión correctamente.");
     },
+
+
 
     _checkAuthentication: function () {
       const token = sessionStorage.getItem("jwt");

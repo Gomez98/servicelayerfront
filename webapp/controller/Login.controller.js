@@ -20,8 +20,7 @@ sap.ui.define([
         .login({ username: oUsername, password: oPassword })
         .then((response) => {
           sessionStorage.setItem("jwt", response.data.data);
-          sap.ui.core.UIComponent.getRouterFor(this).navTo("main");
-      
+          sap.ui.core.UIComponent.getRouterFor(this).navTo("main", {}, true);
           this.getView().byId("usernameInput").setValue("");
           this.getView().byId("passwordInput").setValue("");
           MessageToast.show("Login exitoso. Redirigiendo: ");

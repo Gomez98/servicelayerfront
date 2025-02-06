@@ -7,13 +7,10 @@ sap.ui.define([
     "use strict";
 
     return Controller.extend("myApp.controller.MasterFields", {
-        onInit: function () {
+
+        onBeforeRendering: function () {
             var oModel = new JSONModel();
             this.getView().setModel(oModel, "camposModel");
-        },
-
-        onAfterRendering: function () {
-            const oModel = this.getView().getModel("camposModel");
             apiService.getMasterFields()
                 .then(response => {
                     console.log("response", response)

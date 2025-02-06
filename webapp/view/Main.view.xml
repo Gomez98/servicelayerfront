@@ -84,7 +84,8 @@
               </tnt:NavigationList>
             </tnt:item>
             <tnt:fixedItem>
-              <tnt:NavigationList>
+              <tnt:NavigationList
+               itemSelect="onSideNavItemSelect">
                 <tnt:NavigationListItem
                   text="Cerrar Sesión"
                   icon="sap-icon://log"

@@ -38,7 +38,7 @@
         "controlId": "app",
         "controlAggregation": "pages",
         "async": true,
-        "clearControlAggregation": false
+        "clearControlAggregation": true
       },
       "routes": [
         {
