@@ -37,12 +37,24 @@ sap.ui.define([
         },
 
         onViewDetails: function (oEvent) {
+            
+            // Obtener el contenedor dinámico
             const oItem = oEvent.getSource();
             const oContext = oItem.getBindingContext("goalModel");
             const goalId = oContext.getObject().id;
-            console.log("goalId",goalId)
-            sap.ui.core.UIComponent.getRouterFor(this).navTo("GoalsDetail", { goalId: goalId });
+            let oDynamicContent = this.getView().getParent();
             
+            oDynamicContent.removeAllItems();
+        
+            // Crear la vista GoalsDetail dinámicamente
+            sap.ui.core.mvc.XMLView.create({
+                viewName: "myApp.view.GoalsDetail",
+                viewData: { goalId: goalId }
+            }).then(oDetailView => {
+                oDynamicContent.addItem(oDetailView);
+            }).catch(error => {
+                console.error("❌ Error al cargar GoalsDetail.view.xml:", error);
+            });
         },
 
         onOpenImportDialog: function () {

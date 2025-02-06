@@ -75,6 +75,7 @@ sap.ui.define([
           viewModel.setProperty("/metasVisible", true);
           viewModel.setProperty("/reportsVisible", false);
           viewModel.setProperty("/servicesVisible", false);
+          viewModel.setProperty("/convertVisible", false);
           this._loadView("myApp.view.Goals"); // Carga la vista de metas
           break;
 
@@ -83,6 +84,7 @@ sap.ui.define([
           viewModel.setProperty("/metasVisible", true);
           viewModel.setProperty("/reportsVisible", false);
           viewModel.setProperty("/servicesVisible", false);
+          viewModel.setProperty("/convertVisible", false);
           this._loadView("myApp.view.Goals"); // Carga la vista de metas
           break;
 
@@ -91,6 +93,7 @@ sap.ui.define([
           viewModel.setProperty("/metasVisible", true);
           viewModel.setProperty("/reportsVisible", false);
           viewModel.setProperty("/servicesVisible", false);
+          viewModel.setProperty("/convertVisible", false);
           this._loadView("myApp.view.MasterFields"); // Carga la vista de metas
           break;
         case "reports":
@@ -98,6 +101,7 @@ sap.ui.define([
           viewModel.setProperty("/metasVisible", false);
           viewModel.setProperty("/reportsVisible", true);
           viewModel.setProperty("/servicesVisible", false);
+          viewModel.setProperty("/convertVisible", false);
           this._loadView("myApp.view.Reports"); // Carga la vista de reportes
           break;
 
@@ -106,7 +110,18 @@ sap.ui.define([
           viewModel.setProperty("/metasVisible", false);
           viewModel.setProperty("/reportsVisible", false);
           viewModel.setProperty("/servicesVisible", true);
+          viewModel.setProperty("/convertVisible", false);
+
           this._loadView("myApp.view.Services"); // Carga la vista de servicios
+          break;
+
+        case "convert":
+          viewModel.setProperty("/isCardMenuVisible", false);
+          viewModel.setProperty("/metasVisible", false);
+          viewModel.setProperty("/reportsVisible", false);
+          viewModel.setProperty("/servicesVisible", false);
+          viewModel.setProperty("/convertVisible", true);
+          this._loadView("myApp.view.Convert"); // Carga la vista de servicios
           break;
 
         case "logout":
@@ -130,7 +145,7 @@ sap.ui.define([
       viewModel.setProperty("/metasVisible", false);
       viewModel.setProperty("/reportsVisible", false);
       viewModel.setProperty("/servicesVisible", false);
-      console.log("KEY", key)
+      viewModel.setProperty("/convertVisible", false);
       switch (key) {
         case "metas":
           viewModel.setProperty("/metasVisible", true);
@@ -143,6 +158,10 @@ sap.ui.define([
         case "servicios":
           viewModel.setProperty("/servicesVisible", true);
           this._loadView("myApp.view.Services");
+          break;
+        case "convert":
+          viewModel.setProperty("/convertVisible", true);
+          this._loadView("myApp.view.Convert");
           break;
         case "logout":
           this._logout();
@@ -164,11 +183,10 @@ sap.ui.define([
       if (!this._views[viewName]) {
         sap.ui.core.mvc.XMLView.create({ viewName })
           .then(oView => {
-            console.log("oView", oView)
             this._views[viewName] = oView;
             oDynamicContent.addItem(oView);
           })
-          
+
       } else {
         oDynamicContent.addItem(this._views[viewName]);
       }

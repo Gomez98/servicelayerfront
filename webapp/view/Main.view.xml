@@ -75,6 +75,12 @@
                   key="servicios"
                   visible="{viewModel>/servicesVisible}">
                 </tnt:NavigationListItem>
+                <tnt:NavigationListItem
+                  text="Conversion"
+                  icon="sap-icon://journey-change"
+                  key="convert"
+                  visible="{viewModel>/convertVisible}">
+                </tnt:NavigationListItem>
               </tnt:NavigationList>
             </tnt:item>
             <tnt:fixedItem>
@@ -139,6 +145,21 @@
               </customData>
               <TileContent>
                 <ImageContent src="sap-icon://crm-service-manager" />
+              </TileContent>
+            </GenericTile>
+
+            
+            <!-- Card Convert -->
+            <GenericTile
+              class="sapUiTinyMargin"
+              header="Conversion"
+              subheader="Convierte estado de cuenta"
+              press="onCardSelect">
+              <customData>
+                <core:CustomData key="action" value="convert"/>
+              </customData>
+              <TileContent>
+                <ImageContent src="sap-icon://journey-change"/>
               </TileContent>
             </GenericTile>
 

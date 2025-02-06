@@ -106,7 +106,6 @@ sap.ui.define([
             const oNavContainer = this.byId("navContainer");
             const oCurrentPage = oNavContainer.getCurrentPage();
             const sCurrentPageId = oCurrentPage.getId().split("--").pop();
-            console.log("sCurrentPageId", sCurrentPageId)
             if (sCurrentPageId === "fileUploaderPage") {
                 // Validar que se haya subido un archivo antes de avanzar
                 if (!this._fileUploaded) {
@@ -202,7 +201,6 @@ sap.ui.define([
 
             apiService.saveHeader({ description })
                 .then(header => {
-                    console.log("header", header);
                     return apiService.saveDetails({
                         goalHeader: { id: header.data.data.id },
                         content: JSON.stringify(content)

@@ -2,8 +2,8 @@ sap.ui.define([], function () {
     "use strict";
 
     const apiClient = axios.create({
-        //baseURL: "https://sv-hol0uzz7c3.cloud.elastika.pe:8443/api",
-        baseURL: "http://localhost:8081/api",
+        baseURL: "https://sv-hol0uzz7c3.cloud.elastika.pe:8443/api",
+        //baseURL: "http://localhost:8081/api",
         headers: {
             "Content-Type": "application/json"
         }
@@ -44,6 +44,12 @@ sap.ui.define([], function () {
         saveDetails: (details) => apiClient.post("/goals/detail/create", details),
         updateDetails: (details) => apiClient.patch("/goals/detail/update", details),
         viewReport: (report) => apiClient.post("/goals/report/general", report),
-        getUser: () => apiClient.get("/user/")
+        getUser: () => apiClient.get("/user/"),
+        makeConvert: (file) => apiClient.post("/convert/", file, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            },
+            responseType: "blob"
+        }),
     };
 });

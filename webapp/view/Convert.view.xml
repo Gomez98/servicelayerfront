@@ -1,0 +1,16 @@
+<mvc:View
+    controllerName="myApp.controller.Convert"
+    xmlns="sap.m"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:unified="sap.ui.unified">
+
+    <unified:FileUploader
+        id="fileUploader"
+        class="sapUiTinyMargin"
+        name="file"
+        fileType="pdf"
+        icon="sap-icon://upload"
+        buttonText="Cargar convertir"
+        change="onFileChange"
+        tooltip="Selecciona un archivo para convertir" />
+</mvc:View>

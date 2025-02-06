@@ -1,35 +1,28 @@
 <mvc:View displayBlock="true"
-  controllerName="myApp.controller.GoalsDetail"
-  height="100%"
-  xmlns="sap.m"
-  xmlns:f="sap.f"
-  xmlns:mvc="sap.ui.core.mvc">
+    controllerName="myApp.controller.GoalsDetail"
+    height="100%"
+    xmlns="sap.m"
+    xmlns:f="sap.f"
+    xmlns:mvc="sap.ui.core.mvc">
 
-  <f:DynamicPage id="detailPageId" toggleHeaderOnTitleClick="false">
-    <!-- DynamicPage Title -->
-    <f:title>
-      <f:DynamicPageTitle>
-        <f:heading>
-          <Title text="Detalle de la Meta" />
-        </f:heading>
-      </f:DynamicPageTitle>
-    </f:title>
 
-    <!-- DynamicPage Content -->
-    <f:content>
-      <Button icon="sap-icon://nav-back" press="onNavBack" tooltip="Volver" />
-      
-      <BusyIndicator visible="{viewModel>/isLoading}" />
+    <Button icon="sap-icon://nav-back" press="onNavBack" tooltip="Volver" />
+    <ScrollContainer
+        height="95vh"
+        vertical="true">
+        <Table id="contentTable"
+            growing="true"
+            sticky="ColumnHeaders,HeaderToolbar"
+            growingScrollToLoad="false"
+            growingThreshold="10">
+            <headerToolbar>
+                <OverflowToolbar>
+                    <Title text="Contenido Detallado / {goalModel>/titleName}" />
+                    <ToolbarSpacer />
+                    <Button text="Guardar Masivo" press="onSave" icon="sap-icon://home" />
 
-      <ScrollContainer height="600px" horizontal="true" vertical="true" class="table-scroll">
-        <Table id="contentTable">
-          <headerToolbar>
-            <OverflowToolbar>
-              <Title text="Contenido Detallado" />
-            </OverflowToolbar>
-          </headerToolbar>
+                </OverflowToolbar>
+            </headerToolbar>
         </Table>
-      </ScrollContainer>
-    </f:content>
-  </f:DynamicPage>
+    </ScrollContainer>
 </mvc:View>

@@ -35,7 +35,6 @@ sap.ui.define([
                     const aData = response.data;
                     oModel.setProperty("/data", aData);
                     oModel.setProperty("/totalPages", Math.ceil(aData.length / oModel.getProperty("/pageSize")));
-                    console.log("REPORTMODEL", oModel)
                     this._updatePagination();
                 })
                 .catch((error) => {
