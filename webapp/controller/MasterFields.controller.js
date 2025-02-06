@@ -16,6 +16,7 @@ sap.ui.define([
             const oModel = this.getView().getModel("camposModel");
             apiService.getMasterFields()
                 .then(response => {
+                    console.log("response", response)
                     oModel.setData({ fields: response.data.data });
                 })
                 .catch(error => {
