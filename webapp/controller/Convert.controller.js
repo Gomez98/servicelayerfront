@@ -39,6 +39,7 @@ sap.ui.define([
             })
             .finally(() => {
                 busyDialog.close();
+                oFileUploader.setValue("");
             });
         }
     });
