@@ -29,6 +29,14 @@ sap.ui.define([
                 MessageToast.show("Seleccione un archivo.");
                 return;
             }
+
+            // Validar tamaño máximo (5 MB)
+            const maxSize = 5 * 1024 * 1024; // 5 MB
+            if (oFile.size > maxSize) {
+                MessageToast.show("El archivo excede el tamaño máximo permitido de 5 MB.");
+                return;
+            }
+            
             const sFileType = oFile.name.split(".").pop().toLowerCase();
             const reader = new FileReader();
 
@@ -226,17 +234,17 @@ sap.ui.define([
             this._fileContent = null;
             this._headers = [];
             this._fileUploaded = false;
-        
+
             // Navegar a la página inicial
             const oNavContainer = this.byId("navContainer");
             oNavContainer.to(this.byId("fileUploaderPage"));
-        
+
             // Limpiar el FileUploader
             const oFileUploader = this.byId("fileUploader");
             if (oFileUploader) {
                 oFileUploader.setValue(""); // Restablecer el valor del FileUploader
             }
-        
+
             // Limpiar la tabla
             const oTable = this.byId("contentTable");
             if (oTable) {
@@ -244,19 +252,19 @@ sap.ui.define([
                 oTable.removeAllItems();
                 oTable.setVisible(false);
             }
-        
+
             // Limpiar el contenedor de mapeo
             const oMappingContainer = this.byId("headerMapping");
             if (oMappingContainer) {
                 oMappingContainer.removeAllItems();
             }
-        
+
             // Limpiar el campo de descripción
             const oDescriptionInput = this.byId("descriptionInput");
             if (oDescriptionInput) {
                 oDescriptionInput.setValue("");
             }
-        
+
             this.byId("importDataDialog").close();
         }
     });

@@ -23,7 +23,6 @@ sap.ui.define(["sap/ui/core/UIComponent"], function (UIComponent) {
       }
     },
     destroy: function () {
-      // Limpiar caché de vistas
       this.getRouter().getViews()._cache = {};
       UIComponent.prototype.destroy.apply(this, arguments);
     }

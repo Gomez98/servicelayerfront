@@ -1,51 +1,48 @@
 <mvc:View
   controllerName="myApp.controller.Login"
   xmlns="sap.m"
-  xmlns:mvc="sap.ui.core.mvc">
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns:f="sap.f"
+  xmlns:card="sap.f.cards">
+  <Page backgroundDesign="Transparent" showHeader="false" enableScrolling="false">
 
-  <Page>
-    <headerContent>
-
-    </headerContent>
-    <content>
-      <VBox
-        class="loginContainer"
-        justifyContent="Center"
-        alignItems="Center">
-        <VBox
-          class="loginForm">
-          <HBox
+    <VBox
+      justifyContent="Center"
+      alignItems="Center"
+      height="100vh">
+      <f:Card class="sapUiMediumMargin" width="350px">
+        <f:header>
+          <card:Header
+            title="Bienvenido al Sistema"
+            subtitle="Ingrese sus credenciales"
+            iconSrc="sap-icon://customer" />
+        </f:header>
+        <f:content>
+          <VBox
+            height="200px"
+            width="100%"
+            justifyContent="Center"
             alignItems="Center"
-            class="loginHeader">
-            <Title
-              text="Bienvenido al Sistema"
-              level="H1"
-              class="loginTitle" />
-          </HBox>
-          <Label
-            text="Usuario"
-            class="loginLabel" />
-          <Input
-            id="usernameInput"
-            placeholder="Ingrese su usuario"
-            class="loginInput" />
+            class="sapUiSmallMargin">
 
-          <Label
-            text="Contraseña"
-            class="loginLabel" />
-          <Input
-            id="passwordInput"
-            type="Password"
-            placeholder="Ingrese su contraseña"
-            class="loginInput" />
+            <Label text="Usuario" />
+            <Input id="usernameInput" placeholder="Ingrese su usuario" width="100%" />
 
-          <Button
-            text="Iniciar Sesión"
-            type="Emphasized"
-            press="onLogin"
-            class="loginButton" />
-        </VBox>
-      </VBox>
-    </content>
+            <Label text="Contraseña" />
+            <Input id="passwordInput" type="Password" placeholder="Ingrese su contraseña"
+              width="100%" />
+
+            <Button
+              text="Iniciar Sesión"
+              press="onLogin"
+              type="Emphasized"
+              width="100%"
+              class="sapUiTinyMarginTop" />
+          </VBox>
+        </f:content>
+      </f:Card>
+
+    </VBox>
   </Page>
+
 </mvc:View>

@@ -10,6 +10,16 @@ html[dir="rtl"] .myAppDemoWT .myCustomButton.sapMBtn {
 	cursor: pointer;
 }
 
-.myAppDemoWT .myCustomFileUploader{
-  
+.loginPage {
+    background: url("../images/back.svg") no-repeat center center fixed;
+    background-size: cover;
+    height: 100vh;
+    width: 100vw;
+}
+
+@media (max-width: 768px) {
+    .loginPage {
+        background-size: contain; /* Ajusta la imagen en dispositivos más pequeños */
+        background-position: top;
+    }
 }

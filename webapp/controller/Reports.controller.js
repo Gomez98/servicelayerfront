@@ -8,7 +8,6 @@ sap.ui.define([
 
     return Controller.extend("myApp.controller.Reports", {
         onInit: function () {
-            // Inicializar el modelo con información de la paginación
             const oModel = new JSONModel({
                 data: [],
                 pageSize: 5,
@@ -24,7 +23,6 @@ sap.ui.define([
             const sUsername = this.byId("filterUsername").getValue();
             const sStatus = this.byId("filterStatus").getSelectedKey();
 
-            // Realizar la solicitud al backend para obtener el reporte completo
             apiService
                 .viewReport({
                     username: sUsername,
@@ -48,12 +46,10 @@ sap.ui.define([
             const iCurrentPage = oModel.getProperty("/currentPage");
             const aData = oModel.getProperty("/data");
 
-            // Calcular los datos visibles para la página actual
             const iStartIndex = (iCurrentPage - 1) * iPageSize;
             const iEndIndex = iStartIndex + iPageSize;
             const aVisibleData = aData.slice(iStartIndex, iEndIndex);
 
-            // Actualizar la tabla con los datos visibles
             oModel.setProperty("/visibleData", aVisibleData);
             oModel.setProperty("/hasPreviousPage", iCurrentPage > 1);
             oModel.setProperty("/hasNextPage", iCurrentPage < oModel.getProperty("/totalPages"));

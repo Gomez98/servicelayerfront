@@ -22,19 +22,15 @@ sap.ui.define([
     },
 
     _onToggleSideContent: function () {
-      console.log("TOGLE1")
       const homeContainer = this.getView().byId("menuIconContainer");
       if (homeContainer) {
-        console.log("TOGLE2")
         homeContainer.attachBrowserEvent("click", this._onIconContainerPress.bind(this));
       }
     },
 
     _onIconContainerPress: function () {
-      console.log("TOGLE3")
       const oSideNavigation = this.byId("sideNavId");
       const bExpanded = oSideNavigation.getExpanded();
-      console.log("bExpanded",bExpanded)
       oSideNavigation.setExpanded(!bExpanded);
     },
 
@@ -47,14 +43,12 @@ sap.ui.define([
     },
 
     _initializeModels: function () {
-      // Modelo del usuario
       const userModel = new JSONModel();
       this.getView().setModel(userModel, "userModel");
 
-      // Modelo para controlar la visibilidad del menú
       const viewModel = new JSONModel({
-        isCardMenuVisible: true, // Mostrar las tarjetas inicialmente
-        isSideNavVisible: false, // Ocultar el menú lateral inicialmente
+        isCardMenuVisible: true,
+        isSideNavVisible: false,
         metasVisible: false,
         reportsVisible: false,
         serviciosVisible: false,
@@ -73,7 +67,7 @@ sap.ui.define([
     },
 
     onSideNavItemSelect: function (oEvent) {
-      const sKey = oEvent.getParameter("item").getKey(); // Obtén la clave del ítem seleccionado
+      const sKey = oEvent.getParameter("item").getKey();
       const viewModel = this.getView().getModel("viewModel");
       console.log("sKey",sKey)
       switch (sKey) {
@@ -83,7 +77,7 @@ sap.ui.define([
           viewModel.setProperty("/reportsVisible", false);
           viewModel.setProperty("/servicesVisible", false);
           viewModel.setProperty("/convertVisible", false);
-          this._loadView("myApp.view.Goals"); // Carga la vista de metas
+          this._loadView("myApp.view.Goals");
           break;
 
         case "verMetas":
@@ -92,7 +86,7 @@ sap.ui.define([
           viewModel.setProperty("/reportsVisible", false);
           viewModel.setProperty("/servicesVisible", false);
           viewModel.setProperty("/convertVisible", false);
-          this._loadView("myApp.view.Goals"); // Carga la vista de metas
+          this._loadView("myApp.view.Goals");
           break;
 
         case "camposMaestros":
@@ -101,7 +95,7 @@ sap.ui.define([
           viewModel.setProperty("/reportsVisible", false);
           viewModel.setProperty("/servicesVisible", false);
           viewModel.setProperty("/convertVisible", false);
-          this._loadView("myApp.view.MasterFields"); // Carga la vista de metas
+          this._loadView("myApp.view.MasterFields");
           break;
         case "reports":
           viewModel.setProperty("/isCardMenuVisible", false);
@@ -109,7 +103,7 @@ sap.ui.define([
           viewModel.setProperty("/reportsVisible", true);
           viewModel.setProperty("/servicesVisible", false);
           viewModel.setProperty("/convertVisible", false);
-          this._loadView("myApp.view.Reports"); // Carga la vista de reportes
+          this._loadView("myApp.view.Reports");
           break;
 
         case "servicios":
@@ -119,7 +113,7 @@ sap.ui.define([
           viewModel.setProperty("/servicesVisible", true);
           viewModel.setProperty("/convertVisible", false);
 
-          this._loadView("myApp.view.Services"); // Carga la vista de servicios
+          this._loadView("myApp.view.Services");
           break;
 
         case "convert":
@@ -128,11 +122,11 @@ sap.ui.define([
           viewModel.setProperty("/reportsVisible", false);
           viewModel.setProperty("/servicesVisible", false);
           viewModel.setProperty("/convertVisible", true);
-          this._loadView("myApp.view.Convert"); // Carga la vista de servicios
+          this._loadView("myApp.view.Convert");
           break;
 
         case "logout":
-          this._logout(); // Cierra la sesión
+          this._logout();
           break;
 
         default:
@@ -153,7 +147,7 @@ sap.ui.define([
       viewModel.setProperty("/reportsVisible", false);
       viewModel.setProperty("/servicesVisible", false);
       viewModel.setProperty("/convertVisible", false);
-      console.log("KEY",key)
+
       switch (key) {
         case "metas":
           viewModel.setProperty("/metasVisible", true);
@@ -201,17 +195,13 @@ sap.ui.define([
     },
 
     _logout: function () {
-      // Limpiar sesión
       sessionStorage.removeItem("jwt");
 
-      // Navegar al login
       const oRouter = sap.ui.core.UIComponent.getRouterFor(this);
-      oRouter.navTo("login", {}, true); // true para forzar la recarga
+      oRouter.navTo("login", {}, true);
 
       MessageToast.show("Has cerrado sesión correctamente.");
     },
-
-
 
     _checkAuthentication: function () {
       const token = sessionStorage.getItem("jwt");
